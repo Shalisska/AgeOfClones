@@ -103,7 +103,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EF\ClonesContextEF.cs" />
+    <Compile Include="Entities\Account.cs" />
     <Compile Include="Entities\Profile.cs" />
+    <Compile Include="Migrations\20181111181040_Account_table.cs" />
+    <Compile Include="Migrations\20181111181040_Account_table.designer.cs">
+      <DependentUpon>20181111181040_Account_table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\ClonesContextEFModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

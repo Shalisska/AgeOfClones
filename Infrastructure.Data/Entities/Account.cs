@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data.Entities
 {
-    public class Profile
+    public class Account
     {
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public virtual ICollection<Account> Accounts { get; set; }
+        public int ProfileId { get; set; }
+        public virtual Profile Profile { get; set; }
     }
 }

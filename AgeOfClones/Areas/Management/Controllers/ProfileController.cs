@@ -26,10 +26,20 @@ namespace AgeOfClones.Areas.Management.Controllers
             return View(model);
         }
 
+        public IActionResult IndexAccount()
+        {
+            var model = _clonesContext.Accounts?.ToList();
+
+            return View(model);
+        }
+
         public IActionResult CreateProfile()
         {
-            var r = _clonesContext.Profiles?.ToList();
+            return View();
+        }
 
+        public IActionResult CreateAccount()
+        {
             return View();
         }
 
@@ -38,15 +48,34 @@ namespace AgeOfClones.Areas.Management.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult CreateProfile(Profile profile)
         {
-            var ex = 1;
-            var res = 1 + ex;
-
             try
             {
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
                     _clonesContext.Add(profile);
+                    _clonesContext.SaveChanges();
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // POST: Profile/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CreateAccount(Account account)
+        {
+            try
+            {
+                // TODO: Add insert logic here
+                if (ModelState.IsValid)
+                {
+                    _clonesContext.Add(account);
                     _clonesContext.SaveChanges();
                 }
 

@@ -12,9 +12,10 @@ namespace Infrastructure.Data.EF
     {
         public ClonesContextEF(DbContextOptions<ClonesContextEF> options) : base(options)
         {
-            Database.EnsureCreated();
+            Database.Migrate();
         }
 
         public DbSet<Profile> Profiles { get; set; }
+        public DbSet<Account> Accounts { get; set; }
     }
 }
