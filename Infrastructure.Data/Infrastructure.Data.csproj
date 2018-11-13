@@ -104,10 +104,18 @@
   <ItemGroup>
     <Compile Include="EF\ClonesContextEF.cs" />
     <Compile Include="Entities\Account.cs" />
+    <Compile Include="Entities\Clone.cs" />
+    <Compile Include="Entities\Currency.cs" />
     <Compile Include="Entities\Profile.cs" />
+    <Compile Include="Entities\Resource.cs" />
+    <Compile Include="Entities\Stock.cs" />
     <Compile Include="Migrations\20181111181040_Account_table.cs" />
     <Compile Include="Migrations\20181111181040_Account_table.designer.cs">
       <DependentUpon>20181111181040_Account_table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20181113163458_AddTablesFromClones.cs" />
+    <Compile Include="Migrations\20181113163458_AddTablesFromClones.designer.cs">
+      <DependentUpon>20181113163458_AddTablesFromClones.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\ClonesContextEFModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -115,6 +123,14 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Application.Management\Application.Management.csproj">
+      <Project>{97a3e5fc-6cb7-4326-90d0-84e6ee4defb2}</Project>
+      <Name>Application.Management</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

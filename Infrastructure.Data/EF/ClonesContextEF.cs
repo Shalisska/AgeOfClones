@@ -17,5 +17,9 @@ namespace Infrastructure.Data.EF
 
         public DbSet<Profile> Profiles { get; set; }
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<Stock> Stocks { get; set; }
+        public DbSet<Resource> Resources { get; set; }
+        public DbSet<Currency> Currencies { get; set; }
+        public DbSet<Clone> Clones { get; set; }
     }
 }
