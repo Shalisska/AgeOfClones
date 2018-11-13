@@ -6,29 +6,25 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Infrastructure.Data.EF;
 using Infrastructure.Data.Entities;
+using Application.Management.Interfaces;
+using Application.Management.Models;
 
 namespace AgeOfClones.Areas.Management.Controllers
 {
     [Area("Management")]
     public class ProfileController : Controller
     {
-        ClonesContextEF _clonesContext;
+        IProfileManagementService _profileManagementService;
 
-        public ProfileController(ClonesContextEF clonesContext)
+        public ProfileController(IProfileManagementService profileManagementService)
         {
-            _clonesContext = clonesContext;
+            _profileManagementService = profileManagementService;
         }
 
+        #region Profile
         public IActionResult Index()
         {
-            var model = _clonesContext.Profiles?.ToList();
-
-            return View(model);
-        }
-
-        public IActionResult IndexAccount()
-        {
-            var model = _clonesContext.Accounts?.ToList();
+            var model = _profileManagementService.GetProfiles();
 
             return View(model);
         }
@@ -38,23 +34,52 @@ namespace AgeOfClones.Areas.Management.Controllers
             return View();
         }
 
+        // POST: Profile/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CreateProfile(ProfileManagementModel profile)
+        {
+            try
+            {
+                // TODO: Add insert logic here
+                if (ModelState.IsValid)
+                {
+                    _profileManagementService.CreateProfile(profile);
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+        #endregion Profile
+
+        #region Account
+        public IActionResult IndexAccount()
+        {
+            var model = _profileManagementService.GetAccounts();
+
+            return View(model);
+        }
+
         public IActionResult CreateAccount()
         {
             return View();
         }
 
-        // POST: Profile/Create
+        // POST: Account/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateProfile(Profile profile)
+        public IActionResult CreateAccount(AccountManagementModel account)
         {
             try
             {
                 // TODO: Add insert logic here
                 if (ModelState.IsValid)
                 {
-                    _clonesContext.Add(profile);
-                    _clonesContext.SaveChanges();
+                    _profileManagementService.CreateAccount(account);
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -64,28 +89,7 @@ namespace AgeOfClones.Areas.Management.Controllers
                 return View();
             }
         }
-
-        // POST: Profile/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult CreateAccount(Account account)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-                if (ModelState.IsValid)
-                {
-                    _clonesContext.Add(account);
-                    _clonesContext.SaveChanges();
-                }
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        #endregion Account
 
         // GET: Profile/Edit/5
         public ActionResult Edit(int id)

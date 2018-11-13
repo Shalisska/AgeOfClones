@@ -4,28 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Data.Entities
+namespace Application.Management.Models
 {
-    public class Account
+    public class AccountManagementModel
     {
-        public Account() { }
+        public AccountManagementModel() { }
 
-        public Account(
+        public AccountManagementModel(
             int id,
             string name,
-            int profileId,
-            Profile profile)
+            int profileId)
         {
             Id = id;
             Name = name;
             ProfileId = profileId;
-            Profile = profile;
         }
 
         public int Id { get; set; }
         public string Name { get; set; }
 
         public int ProfileId { get; set; }
-        public Profile Profile { get; set; }
     }
 }

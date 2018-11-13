@@ -5,6 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Infrastructure.Data.EF;
 using System;
+using Application.Management.Interfaces;
+using Application.Management.Services;
+using Application.Data.Repositories;
+using Infrastructure.Data.Repositories;
 
 namespace AgeOfClones
 {
@@ -22,6 +26,11 @@ namespace AgeOfClones
         {
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ClonesContextEF>(options => options.UseSqlServer(connection));
+
+            services.AddTransient<IProfileManagementService, ProfileManagementService>();
+            services.AddTransient<IProfileRepository, ProfileRepository>();
+            services.AddTransient<IAccountRepository, AccountRepository>();
+
             services.AddMvc();
         }
 
