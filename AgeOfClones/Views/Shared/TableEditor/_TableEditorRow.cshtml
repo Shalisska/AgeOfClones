@@ -1,0 +1,16 @@
+﻿@using Application.Models.TableEditor
+
+@model IDictionary<string, IEnumerable<TableEditorCellModel>>
+
+<tr>
+    <td>
+        <input type="checkbox" name="check-row" />
+    </td>
+    @foreach (var item in Model)
+    {
+        foreach(var cell in item.Value)
+        {
+            Html.RenderPartial("TableEditor/_TableEditorCell", cell);
+        }
+    }
+</tr>

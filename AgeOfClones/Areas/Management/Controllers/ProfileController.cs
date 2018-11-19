@@ -7,7 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Infrastructure.Data.EF;
 using Infrastructure.Data.Entities;
 using Application.Management.Interfaces;
+using Application.Interfaces;
 using Application.Management.Models;
+using AgeOfClones.Areas.Management.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Application.Models.TableEditor;
 
 namespace AgeOfClones.Areas.Management.Controllers
 {
@@ -15,18 +19,37 @@ namespace AgeOfClones.Areas.Management.Controllers
     public class ProfileController : Controller
     {
         IProfileManagementService _profileManagementService;
+        ITableEditorService _tableEditorService;
 
-        public ProfileController(IProfileManagementService profileManagementService)
+        public ProfileController(
+            IProfileManagementService profileManagementService,
+            ITableEditorService tableEditorService)
         {
             _profileManagementService = profileManagementService;
+            _tableEditorService = tableEditorService;
         }
 
         #region Profile
         public IActionResult Index()
         {
-            var model = _profileManagementService.GetProfiles();
+            var profiles = _profileManagementService.GetProfiles();
+            var model = GetTableModel(profiles);
 
             return View(model);
+        }
+
+        private ManagementTableViewModel GetTableModel(IEnumerable<ProfileManagementModel> profiles)
+        {
+            var entityType = typeof(ProfileManagementModel);
+
+            var tableModel = _tableEditorService.GetTable(entityType, "Id", profiles);
+
+            _tableEditorService.AddColumn(tableModel, "Id", "Id");
+            _tableEditorService.AddColumn(tableModel, "Name", "Name", ControlType.Input, null);
+
+            var model = new ManagementTableViewModel(tableModel);
+
+            return model;
         }
 
         public IActionResult CreateProfile()

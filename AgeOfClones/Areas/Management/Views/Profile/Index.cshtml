@@ -1,6 +1,9 @@
 ﻿@using Application.Management.Models;
+@*@using AgeOfClones.Areas.Management.Models*@
 
 @model IEnumerable<ProfileManagementModel>
+
+@*@model ManagementTableViewModel*@
 
 @{
     ViewData["Title"] = "Index";
@@ -11,6 +14,8 @@
 <p>
     <a asp-action="CreateProfile" class="viewDialog" data-dialog-title="Создание модели">Добавить</a>
 </p>
+
+@*@{ Html.RenderPartial("TableEditor/_TableEditor", Model.Table); }*@
 
 <table class="table">
     <thead>
@@ -42,27 +47,3 @@
         }
     </tbody>
 </table>
-
-@*@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script>
-        $(document).ready(function () {
-
-            $.ajaxSetup({ cache: false });
-
-            $(".viewDialog").on("click", function (e) {
-                e.preventDefault();
-
-                $("<div></div>")
-                    .addClass("dialog")
-                    .appendTo("body")
-                    .dialog({
-                        title: $(this).attr("data-dialog-title"),
-                        close: function () { $(this).remove() },
-                        modal: true
-                    })
-                    .load(this.href);
-            });
-        });
-    </script>
-}*@
