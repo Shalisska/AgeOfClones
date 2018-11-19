@@ -21,6 +21,7 @@ namespace Application.Management.Interfaces
 
         #region Account
         IEnumerable<AccountManagementModel> GetAccounts();
+        AccountManagementModel GetAccount(int id);
 
         void CreateAccount(AccountManagementModel account);
         void UpdateAccount(AccountManagementModel account);

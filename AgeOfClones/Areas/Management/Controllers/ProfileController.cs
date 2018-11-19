@@ -127,10 +127,11 @@ namespace AgeOfClones.Areas.Management.Controllers
 
         public IActionResult CreateAccount()
         {
-            return View();
+            var model = new AccountManagementModel();
+            ViewData["Action"] = "CreateAccount";
+            return PartialView("_Create", model);
         }
 
-        // POST: Account/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CreateAccount(AccountManagementModel account)
@@ -147,7 +148,62 @@ namespace AgeOfClones.Areas.Management.Controllers
             }
             catch
             {
-                return View();
+                return RedirectToAction(nameof(CreateAccount));
+            }
+        }
+
+        public IActionResult EditAccount(int id)
+        {
+            var model = _profileManagementService.GetAccount(id);
+            ViewData["Action"] = "EditAccount";
+            return PartialView("_Edit", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditAccount(AccountManagementModel account)
+        {
+            try
+            {
+                // TODO: Add update logic here
+                if (ModelState.IsValid)
+                {
+                    _profileManagementService.UpdateAccount(account);
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return RedirectToAction(nameof(EditAccount));
+            }
+        }
+
+        public IActionResult DeleteAccount(int? id)
+        {
+            var model = _profileManagementService.GetAccount(id.Value);
+
+            if (model == null)
+                return RedirectToAction(nameof(Index));
+
+            ViewData["Action"] = "DeleteAccount";
+            return PartialView("_Delete", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteAccount(int id)
+        {
+            try
+            {
+                // TODO: Add delete logic here
+                _profileManagementService.DeleteAccount(id);
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return RedirectToAction(nameof(DeleteAccount));
             }
         }
         #endregion Account

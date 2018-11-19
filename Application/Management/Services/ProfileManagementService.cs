@@ -55,6 +55,11 @@ namespace Application.Management.Services
             return _accountRepository.GetAll();
         }
 
+        public AccountManagementModel GetAccount(int id)
+        {
+            return _accountRepository.Get(id);
+        }
+
         public void CreateAccount(AccountManagementModel account)
         {
             _accountRepository.Create(account);

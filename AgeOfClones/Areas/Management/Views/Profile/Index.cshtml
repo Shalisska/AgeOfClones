@@ -9,7 +9,7 @@
 <h2>Index</h2>
 
 <p>
-    <a asp-area="Management" asp-controller="Profile" asp-action="CreateProfile" class="viewDialog" data-dialog-title="Создание модели">Добавить</a>
+    <a asp-action="CreateProfile" class="viewDialog" data-dialog-title="Создание модели">Добавить</a>
 </p>
 
 <table class="table">
@@ -66,7 +66,3 @@
         });
     </script>
 }
-
-@*@{
-        Html.RenderPartial("CreateProfile", new ProfileManagementModel());
-    }*@
