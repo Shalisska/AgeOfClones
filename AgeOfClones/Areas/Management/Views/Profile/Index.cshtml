@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Application.Management.Models.ProfileManagementModel>
+﻿@using Application.Management.Models;
+
+@model IEnumerable<ProfileManagementModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -7,35 +9,64 @@
 <h2>Index</h2>
 
 <p>
-    <a asp-area="Management" asp-controller="Profile" asp-action="CreateProfile">Create New</a>
+    <a asp-area="Management" asp-controller="Profile" asp-action="CreateProfile" class="viewDialog" data-dialog-title="Создание модели">Добавить</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Id)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Name)
-                </th>
             <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model)
+        {
         <tr>
+            <td>
+                @Html.ActionLink("", "EditProfile", new { id = item.Id }, new { @class = "viewDialog glyphicon glyphicon-pencil", data_dialog_title = "Редактирование модели", title = "Изменить" })
+                @Html.ActionLink("", "DeleteProfile", new { id = item.Id }, new { @class = "viewDialog glyphicon glyphicon-remove", data_dialog_title = "Удаление модели", title = "Удалить" })
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Id)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
         </tr>
-}
+        }
     </tbody>
 </table>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+
+            $.ajaxSetup({ cache: false });
+
+            $(".viewDialog").on("click", function (e) {
+                e.preventDefault();
+
+                $("<div></div>")
+                    .addClass("dialog")
+                    .appendTo("body")
+                    .dialog({
+                        title: $(this).attr("data-dialog-title"),
+                        close: function () { $(this).remove() },
+                        modal: true
+                    })
+                    .load(this.href);
+            });
+        });
+    </script>
+}
+
+@*@{
+        Html.RenderPartial("CreateProfile", new ProfileManagementModel());
+    }*@

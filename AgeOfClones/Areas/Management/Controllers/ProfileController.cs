@@ -31,7 +31,9 @@ namespace AgeOfClones.Areas.Management.Controllers
 
         public IActionResult CreateProfile()
         {
-            return View();
+            var model = new ProfileManagementModel();
+            ViewData["Action"] = "CreateProfile";
+            return PartialView("_Create", model);
         }
 
         // POST: Profile/Create
@@ -51,7 +53,66 @@ namespace AgeOfClones.Areas.Management.Controllers
             }
             catch
             {
-                return View();
+                return RedirectToAction("CreateProfile");
+            }
+        }
+
+        // GET: Profile/Edit/5
+        public IActionResult EditProfile(int id)
+        {
+            var model = _profileManagementService.GetProfile(id);
+            ViewData["Action"] = "EditProfile";
+            return PartialView("_Edit", model);
+        }
+
+        // POST: Profile/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditProfile(ProfileManagementModel profile)
+        {
+            try
+            {
+                // TODO: Add update logic here
+                if (ModelState.IsValid)
+                {
+                    _profileManagementService.UpdateProfile(profile);
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return RedirectToAction("EditProfile");
+            }
+        }
+
+        // GET: Profile/Delete/5
+        public IActionResult DeleteProfile(int? id)
+        {
+            var model = _profileManagementService.GetProfile(id.Value);
+
+            if(model==null)
+                return RedirectToAction(nameof(Index));
+
+            ViewData["Action"] = "DeleteProfile";
+            return PartialView("_Delete", model);
+        }
+
+        // POST: Profile/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteProfile(int id)
+        {
+            try
+            {
+                // TODO: Add delete logic here
+                _profileManagementService.DeleteProfile(id);
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return RedirectToAction("DeleteProfile");
             }
         }
         #endregion Profile
@@ -91,50 +152,6 @@ namespace AgeOfClones.Areas.Management.Controllers
         }
         #endregion Account
 
-        // GET: Profile/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
 
-        // POST: Profile/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Profile/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Profile/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }

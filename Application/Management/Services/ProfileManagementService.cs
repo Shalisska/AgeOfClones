@@ -28,6 +28,11 @@ namespace Application.Management.Services
             return _profileRepository.GetAll();
         }
 
+        public ProfileManagementModel GetProfile(int id)
+        {
+            return _profileRepository.Get(id);
+        }
+
         public void CreateProfile(ProfileManagementModel profile)
         {
             _profileRepository.Create(profile);

@@ -11,6 +11,7 @@ namespace Application.Management.Interfaces
     {
         #region Profile
         IEnumerable<ProfileManagementModel> GetProfiles();
+        ProfileManagementModel GetProfile(int id);
 
         void CreateProfile(ProfileManagementModel profile);
         void UpdateProfile(ProfileManagementModel profile);
