@@ -4,6 +4,8 @@
 
 @{
     var value = string.IsNullOrEmpty(Model.Value) ? "0" : Model.Value;
+    var selectItems = Model.SelectList;
+    var res = "";
  }
 
     @if (Model.IsEditable)
@@ -18,9 +20,9 @@
                 if (Model.SelectList != null && Model.SelectList.Count() > 0)
                 {
                     <select id="@Model.PropertyName" name="@Model.PropertyName">
-                        @foreach (SelectListItem item in Model.SelectList.Items)
+                        @foreach (SelectListItem item in Model.SelectList)
                         {
-                            if (item == Model.SelectList.SelectedValue)
+                            if (item.Selected)
                             {
                                 <option selected="selected" value="@item.Value">@item.Text</option>
                             }

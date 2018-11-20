@@ -34,7 +34,7 @@ namespace Application.Services
             var propertyInfo = entityType.GetProperty(propertyName);
 
             var requiredAttribute = (RequiredAttribute)propertyInfo.GetCustomAttributes(typeof(RequiredAttribute), false).FirstOrDefault();
-            var requiredErrorMessage = requiredAttribute.ErrorMessage ?? $"Требуется поле {propertyName}.";
+            var requiredErrorMessage = requiredAttribute?.ErrorMessage ?? $"Требуется поле {propertyName}.";
             validationAttributes.Add("required", requiredErrorMessage);
 
             return validationAttributes;

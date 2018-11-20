@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Infrastructure.Data.EF;
-using Infrastructure.Data.Entities;
 using Application.Management.Interfaces;
 using Application.Interfaces;
 using Application.Management.Models;
@@ -46,7 +44,7 @@ namespace AgeOfClones.Areas.Management.Controllers
             var tableModel = new EntityEditorModel(entityType, "Id", profiles, profile);
 
             tableModel.AddColumn("Id");
-            tableModel.AddColumn("Name", ControlType.Input, _tableEditorService.GetValidationAttributes(entityType, "Name"), null, null);
+            tableModel.AddColumn("Name", ControlType.Input, _tableEditorService.GetValidationAttributes(entityType, "Name"), null);
 
             return tableModel;
         }
@@ -150,16 +148,35 @@ namespace AgeOfClones.Areas.Management.Controllers
         #region Account
         public IActionResult IndexAccount()
         {
-            var model = _profileManagementService.GetAccounts();
+            var accounts = _profileManagementService.GetAccounts();
+            var tableModel = GetAccountTableModel(accounts, null);
 
-            return View(model);
+            var model = new ManagementTableViewModel(tableModel, nameof(CreateAccount), nameof(EditAccount), nameof(DeleteAccount));
+
+            return View("TableEditor/_Table", model);
+        }
+
+        private EntityEditorModel GetAccountTableModel(IEnumerable<AccountManagementModel> accounts, AccountManagementModel account)
+        {
+            var entityType = typeof(AccountManagementModel);
+
+            var tableModel = new EntityEditorModel(entityType, "Id", accounts, account);
+            var profiles = _profileManagementService.GetProfiles().OrderBy(p => p.Name);
+
+            tableModel.AddColumn("Id");
+            tableModel.AddColumn("Name", ControlType.Input, _tableEditorService.GetValidationAttributes(entityType, "Name"), null);
+            tableModel.AddColumn("ProfileId", ControlType.Select, _tableEditorService.GetValidationAttributes(entityType, "ProfileId"), new SelectList(profiles, "Id", "Name"));
+
+            return tableModel;
         }
 
         public IActionResult CreateAccount()
         {
-            var model = new AccountManagementModel();
+            var tableModel = GetAccountTableModel(null, null);
+            var model = tableModel.GetNewEntity().ToList();
+
             ViewData["Action"] = "CreateAccount";
-            return PartialView("_Create", model);
+            return PartialView("TableEditor/_TableCreate", model);
         }
 
         [HttpPost]
@@ -174,7 +191,7 @@ namespace AgeOfClones.Areas.Management.Controllers
                     _profileManagementService.CreateAccount(account);
                 }
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(IndexAccount));
             }
             catch
             {
@@ -184,9 +201,13 @@ namespace AgeOfClones.Areas.Management.Controllers
 
         public IActionResult EditAccount(int id)
         {
-            var model = _profileManagementService.GetAccount(id);
+            var account = _profileManagementService.GetAccount(id);
+
+            var tableModel = GetAccountTableModel(null, account);
+            var model = tableModel.GetCurrentEntity().ToList();
+
             ViewData["Action"] = "EditAccount";
-            return PartialView("_Edit", model);
+            return PartialView("TableEditor/_TableEdit", model);
         }
 
         [HttpPost]
@@ -201,7 +222,7 @@ namespace AgeOfClones.Areas.Management.Controllers
                     _profileManagementService.UpdateAccount(account);
                 }
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(IndexAccount));
             }
             catch
             {
@@ -214,10 +235,11 @@ namespace AgeOfClones.Areas.Management.Controllers
             var model = _profileManagementService.GetAccount(id.Value);
 
             if (model == null)
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(IndexAccount));
 
+            ViewData["Name"] = model.Name;
             ViewData["Action"] = "DeleteAccount";
-            return PartialView("_Delete", model);
+            return PartialView("TableEditor/_TableDelete");
         }
 
         [HttpPost]
@@ -229,7 +251,7 @@ namespace AgeOfClones.Areas.Management.Controllers
                 // TODO: Add delete logic here
                 _profileManagementService.DeleteAccount(id);
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(IndexAccount));
             }
             catch
             {

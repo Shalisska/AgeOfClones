@@ -33,9 +33,9 @@ namespace AgeOfClones.Areas.Management.Models
             Fields.Add(new EntityEditorFieldModel(propertyName));
         }
 
-        public void AddColumn(string propertyName, ControlType controlType, IDictionary<string, string> validationAttributes, string selectListPropertyName, SelectList selectList)
+        public void AddColumn(string propertyName, ControlType controlType, IDictionary<string, string> validationAttributes, SelectList selectList)
         {
-            Fields.Add(new EntityEditorFieldModel(propertyName, controlType, validationAttributes, selectListPropertyName, selectList));
+            Fields.Add(new EntityEditorFieldModel(propertyName, controlType, validationAttributes, selectList));
         }
 
         public IDictionary<string, IEnumerable<EntityEditorCurrentFieldModel>> GetEntitiesForDisplay()
@@ -88,7 +88,8 @@ namespace AgeOfClones.Areas.Management.Models
         {
             var fields = Fields.Select(field => new EntityEditorCurrentFieldModel(
                     field.PropertyName,
-                    GetCurrentEntityValue(entity, field.PropertyName).ToString()
+                    GetCurrentEntityValue(entity, field.PropertyName).ToString(),
+                    field.SelectList
                     ));
 
             return fields;
@@ -102,7 +103,7 @@ namespace AgeOfClones.Areas.Management.Models
                     field.IsEditable,
                     field.ControlType,
                     field.ValidationAttributes,
-                    GetSelectList(field.SelectList, GetCurrentEntityValue(entity, field.SelectListPropertyName))
+                    field.SelectList
                     )).ToList();
 
             return fields;
@@ -116,22 +117,10 @@ namespace AgeOfClones.Areas.Management.Models
                     field.IsEditable,
                     field.ControlType,
                     field.ValidationAttributes,
-                    GetSelectList(field.SelectList, null)
+                    field.SelectList
                     ));
 
             return fields;
-        }
-
-        private SelectList GetSelectList(SelectList selectList, object selectedItem)
-        {
-            if(selectList != null && selectList.Count() > 0)
-            {
-                return selectedItem != null ? new SelectList(selectList.Items, selectList.DataValueField, selectList.DataTextField, selectedItem) : selectList;
-            }
-            else
-            {
-                return null;
-            }
         }
 
         private object GetCurrentEntityValue(object entity, string propertyName)
@@ -156,15 +145,13 @@ namespace AgeOfClones.Areas.Management.Models
             string propertyName,
             ControlType controlType,
             IDictionary<string, string> validationAttributes,
-            string selectListPropertyName,
             SelectList selectList)
         {
             PropertyName = propertyName;
             Name = PropertyName;
             IsEditable = true;
-            ControlType = ControlType;
+            ControlType = controlType;
             ValidationAttributes = validationAttributes;
-            SelectListPropertyName = selectListPropertyName;
             SelectList = selectList;
         }
 
@@ -173,7 +160,6 @@ namespace AgeOfClones.Areas.Management.Models
         public bool IsEditable { get; set; }
         public ControlType ControlType { get; set; }
         public IDictionary<string, string> ValidationAttributes { get; set; }
-        public string SelectListPropertyName { get; set; }
         public SelectList SelectList { get; set; }
     }
 
@@ -181,10 +167,12 @@ namespace AgeOfClones.Areas.Management.Models
     {
         internal EntityEditorCurrentFieldModel(
             string propertyName,
-            string value)
+            string value,
+            SelectList selectList)
         {
             PropertyName = propertyName;
             Value = value;
+            SelectList = GetSelectList(selectList, Value);
         }
 
         internal EntityEditorCurrentFieldModel(
@@ -200,7 +188,7 @@ namespace AgeOfClones.Areas.Management.Models
             IsEditable = isEditable;
             ControlType = controlType;
             ValidationAttributes = validationAttributes;
-            SelectList = selectList;
+            SelectList = GetSelectList(selectList, Value);
         }
 
         public string PropertyName { get; set; }
@@ -211,6 +199,18 @@ namespace AgeOfClones.Areas.Management.Models
 
         public IDictionary<string, string> ValidationAttributes { get; set; }
         public SelectList SelectList { get; set; }
+
+        private SelectList GetSelectList(SelectList selectList, object selectedItem)
+        {
+            if (selectList != null && selectList.Count() > 0)
+            {
+                return selectedItem != null ? new SelectList(selectList.Items, selectList.DataValueField, selectList.DataTextField, selectedItem) : selectList;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 
     public enum ControlType

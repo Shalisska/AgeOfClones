@@ -18,9 +18,18 @@
 
     @foreach (var cell in item.Value)
     {
-        <td>
+    <td>
+        @if (cell.SelectList != null)
+        {
+            var textValue = cell.SelectList.Where(c => c.Value == cell.Value).Select(c => c.Text).FirstOrDefault();
+            @textValue
+        }
+        else
+        {
             @cell.Value
-        </td>
+        }
+
+    </td>
     }
 </tr>
 }
