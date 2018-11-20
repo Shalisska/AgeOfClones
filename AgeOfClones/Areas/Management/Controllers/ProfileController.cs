@@ -11,7 +11,6 @@ using Application.Interfaces;
 using Application.Management.Models;
 using AgeOfClones.Areas.Management.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Application.Models.TableEditor;
 
 namespace AgeOfClones.Areas.Management.Controllers
 {
@@ -19,11 +18,11 @@ namespace AgeOfClones.Areas.Management.Controllers
     public class ProfileController : Controller
     {
         IProfileManagementService _profileManagementService;
-        ITableEditorService _tableEditorService;
+        IEntityEditorService _tableEditorService;
 
         public ProfileController(
             IProfileManagementService profileManagementService,
-            ITableEditorService tableEditorService)
+            IEntityEditorService tableEditorService)
         {
             _profileManagementService = profileManagementService;
             _tableEditorService = tableEditorService;
@@ -33,30 +32,33 @@ namespace AgeOfClones.Areas.Management.Controllers
         public IActionResult Index()
         {
             var profiles = _profileManagementService.GetProfiles();
-            var model = GetTableModel(profiles);
+            var tableModel = GetTableModel(profiles, null);
 
-            return View(model);
+            var model = new ManagementTableViewModel(tableModel, nameof(CreateProfile), nameof(EditProfile), nameof(DeleteProfile));
+
+            return View("TableEditor/_Table", model);
         }
 
-        private ManagementTableViewModel GetTableModel(IEnumerable<ProfileManagementModel> profiles)
+        private EntityEditorModel GetTableModel(IEnumerable<ProfileManagementModel> profiles, ProfileManagementModel profile)
         {
             var entityType = typeof(ProfileManagementModel);
 
-            var tableModel = _tableEditorService.GetTable(entityType, "Id", profiles);
+            var tableModel = new EntityEditorModel(entityType, "Id", profiles, profile);
 
-            _tableEditorService.AddColumn(tableModel, "Id", "Id");
-            _tableEditorService.AddColumn(tableModel, "Name", "Name", ControlType.Input, null);
+            tableModel.AddColumn("Id");
+            tableModel.AddColumn("Name", ControlType.Input, _tableEditorService.GetValidationAttributes(entityType, "Name"), null, null);
 
-            var model = new ManagementTableViewModel(tableModel);
-
-            return model;
+            return tableModel;
         }
 
         public IActionResult CreateProfile()
         {
-            var model = new ProfileManagementModel();
+            var tableModel = GetTableModel(null, null);
+            var model = tableModel.GetNewEntity().ToList();
+
+            //var model = new ProfileManagementModel();
             ViewData["Action"] = "CreateProfile";
-            return PartialView("_Create", model);
+            return PartialView("TableEditor/_TableCreate", model);
         }
 
         // POST: Profile/Create
@@ -83,9 +85,13 @@ namespace AgeOfClones.Areas.Management.Controllers
         // GET: Profile/Edit/5
         public IActionResult EditProfile(int id)
         {
-            var model = _profileManagementService.GetProfile(id);
+            var profile = _profileManagementService.GetProfile(id);
+
+            var tableModel = GetTableModel(null, profile);
+            var model = tableModel.GetCurrentEntity().ToList();
+
             ViewData["Action"] = "EditProfile";
-            return PartialView("_Edit", model);
+            return PartialView("TableEditor/_TableEdit", model);
         }
 
         // POST: Profile/Edit/5
@@ -117,8 +123,9 @@ namespace AgeOfClones.Areas.Management.Controllers
             if(model==null)
                 return RedirectToAction(nameof(Index));
 
+            ViewData["Name"] = model.Name;
             ViewData["Action"] = "DeleteProfile";
-            return PartialView("_Delete", model);
+            return PartialView("TableEditor/_TableDelete");
         }
 
         // POST: Profile/Delete/5

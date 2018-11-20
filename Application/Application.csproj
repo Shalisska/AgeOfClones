@@ -30,9 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.AspNetCore.Mvc.ViewFeatures">
-      <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.aspnetcore.mvc.viewfeatures\2.0.4\lib\netstandard2.0\Microsoft.AspNetCore.Mvc.ViewFeatures.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -51,7 +48,7 @@
     <Compile Include="Data\Repositories\IResourceRepository.cs" />
     <Compile Include="Data\Repositories\IStockRepository.cs" />
     <Compile Include="Interfaces\IAuthorizationService.cs" />
-    <Compile Include="Interfaces\ITableEditorService.cs" />
+    <Compile Include="Interfaces\IEntityEditorService.cs" />
     <Compile Include="Management\Interfaces\IProfileManagementService.cs" />
     <Compile Include="Management\Models\AccountManagementModel.cs" />
     <Compile Include="Management\Models\CloneModel.cs" />
@@ -60,17 +57,21 @@
     <Compile Include="Management\Models\ResourceModel.cs" />
     <Compile Include="Management\Models\StockModel.cs" />
     <Compile Include="Management\Services\ProfileManagementService.cs" />
-    <Compile Include="Models\TableEditor\TableEditorModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AuthorizationService.cs" />
-    <Compile Include="Services\TableEditorService.cs" />
+    <Compile Include="Services\EntityEditorService.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Domain.GameModule\Domain.GameModule.csproj">
       <Project>{c9f8fd97-e6ba-4a55-a62f-72d07eb4f9ec}</Project>
       <Name>Domain.GameModule</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\EntityEditor\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

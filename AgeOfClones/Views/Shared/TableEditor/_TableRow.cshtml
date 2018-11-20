@@ -1,0 +1,26 @@
+﻿@using AgeOfClones.Areas.Management.Models
+
+@model ManagementTableViewModel
+
+@{ 
+    var rows = Model.Table.GetEntitiesForDisplay();
+    var editAction = Model.EditActionName;
+    var deleteAction = Model.DeleteActionName;
+}
+
+@foreach (var item in rows)
+{
+<tr>
+    <td>
+        @Html.ActionLink("", editAction, new { id = Int32.Parse(item.Key) }, new { @class = "viewDialog glyphicon glyphicon-pencil", data_dialog_title = "Редактирование модели", title = "Изменить" })
+        @Html.ActionLink("", deleteAction, new { id = Int32.Parse(item.Key) }, new { @class = "viewDialog glyphicon glyphicon-remove", data_dialog_title = "Удаление модели", title = "Удалить" })
+    </td>
+
+    @foreach (var cell in item.Value)
+    {
+        <td>
+            @cell.Value
+        </td>
+    }
+</tr>
+}

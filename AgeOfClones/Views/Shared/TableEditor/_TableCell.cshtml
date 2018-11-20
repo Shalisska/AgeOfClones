@@ -2,25 +2,22 @@
 
 @model EntityEditorCurrentFieldModel
 
-@{
-    var value = string.IsNullOrEmpty(Model.Value) ? "0" : Model.Value;
- }
-
+<td>
     @if (Model.IsEditable)
     {
         switch (Model.ControlType)
         {
-            @*case ControlType.Hidden:
-                @value
-                <input type="hidden" id="@Model.PropertyName" name="@Model.PropertyName" value="@value">
-                break;*@
+            case ControlType.Hidden:
+                @Model.Value
+                <input data-name="@Model.PropertyName" type="hidden" id="@Model.TagId" name="@Model.TagId" value="@Model.Value">
+                break;
             case ControlType.Select:
-                if (Model.SelectList != null && Model.SelectList.Count() > 0)
+                if (Model.SelectListItems != null && Model.SelectListItems.Count() > 0)
                 {
-                    <select id="@Model.PropertyName" name="@Model.PropertyName">
-                        @foreach (SelectListItem item in Model.SelectList.Items)
+                    <select data-name="@Model.PropertyName" id="@Model.TagId" name="@Model.TagId">
+                        @foreach (SelectListItem item in Model.SelectListItems.Items)
                         {
-                            if (item == Model.SelectList.SelectedValue)
+                            if (item == Model.SelectListItems.SelectedValue)
                             {
                                 <option selected="selected" value="@item.Value">@item.Text</option>
                             }
@@ -33,20 +30,20 @@
                 }
                 break;
             default:
-                <input type="text" id="@Model.PropertyName" name="@Model.PropertyName" value="@Model.Value" @Html.Raw(GetValidationAttributes(Model.ValidationAttributes)) />
+                <input type="text" data-name="@Model.PropertyName" id="@Model.TagId" name="@Model.TagId" value="@Model.Value" @Html.Raw(GetValidationAttributes(Model.ValidationAttributes)) />
                 break;
         }
         if (Model.ControlType != ControlType.Hidden)
         {
-            <span class="field-validation-valid" data-valmsg-for="@Model.PropertyName" data-valmsg-replace="true"></span>
+            <span class="field-validation-valid" data-valmsg-for="@Model.TagId" data-valmsg-replace="true"></span>
         }
     }
     else
     {
-        @value
-        <input type="hidden" id="@Model.PropertyName" name="@Model.PropertyName" value="@value">
+        @Model.Value
+        <input data-name="@Model.PropertyName" type="hidden" id="@Model.TagId" name="@Model.TagId" value="@Model.Value">
     }
-
+</td>
 
 @functions{
     public string GetValidationAttributes(IDictionary<string, string> ValidationAttributes)

@@ -1,0 +1,8 @@
+﻿@model object
+
+<h3>Are you sure you want to delete @ViewData["Name"]?</h3>
+<div>
+    <form asp-action="@ViewData["Action"]">
+        <input type="submit" value="Delete" class="btn btn-default" />
+    </form>
+</div>

@@ -1,16 +1,15 @@
-﻿@using Application.Models.TableEditor
+﻿@using AgeOfClones.Areas.Management.Models
 
-@model IDictionary<string, IEnumerable<TableEditorCellModel>>
+@model IDictionary<string, IEnumerable<EntityEditorCurrentFieldModel>>
 
 <tr>
-    <td>
-        <input type="checkbox" name="check-row" />
-    </td>
     @foreach (var item in Model)
     {
-        foreach(var cell in item.Value)
+        foreach (var cell in item.Value)
         {
-            Html.RenderPartial("TableEditor/_TableEditorCell", cell);
+            <td>
+                @{ Html.RenderPartial("TableEditor/_TableEditorCell", cell); }
+            </td>
         }
     }
 </tr>

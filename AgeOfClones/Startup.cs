@@ -12,8 +12,6 @@ using Application.Services;
 using Application.Data.Repositories;
 using Infrastructure.Data.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Application.Interfaces;
-using Application.Services;
 
 namespace AgeOfClones
 {
@@ -35,7 +33,7 @@ namespace AgeOfClones
             services.AddTransient<IProfileManagementService, ProfileManagementService>();
             services.AddTransient<IAuthorizationService, AuthorizationService>();
 
-            services.AddTransient<ITableEditorService, TableEditorService>();
+            services.AddTransient<IEntityEditorService, EntityEditorService>();
             services.AddTransient<IProfileRepository, ProfileRepository>();
             services.AddTransient<IAccountRepository, AccountRepository>();
 

@@ -1,0 +1,27 @@
+﻿@using AgeOfClones.Areas.Management.Models
+
+@model ManagementTableViewModel
+
+@{ 
+    var table = Model.Table;
+}
+
+<p>
+    <a asp-action="@Model.CreateActionName" class="viewDialog" data-dialog-title="Создание модели">Добавить</a>
+</p>
+
+<table>
+    <thead>
+        <tr>
+            @foreach (var field in table.Fields)
+            {
+                <th>
+                    @field.Name
+                </th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @{Html.RenderPartial("TableEditor/_TableRow");}
+    </tbody>
+</table>
