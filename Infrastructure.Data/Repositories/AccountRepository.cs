@@ -25,17 +25,17 @@ namespace Infrastructure.Data.Repositories
             var accouts = _db.Accounts;
 
             if (accouts != null && accouts.Count() > 0)
-                return accouts.Select(a => new AccountManagementModel(a.Id, a.Name, a.ProfileId));
+                return accouts.Select(a => new AccountManagementModel(a.Id, a.Name, a.ProfileId, new ProfileManagementModel(a.ProfileId, a.Profile.Name)));
 
             return null;
         }
 
         public AccountManagementModel Get(int id)
         {
-            var account = _db.Accounts.Find(id);
+            var account = _db.Accounts.Include(a => a.Profile).FirstOrDefault(a => a.Id == id);
 
             if (account != null)
-                return new AccountManagementModel(account.Id, account.Name, account.ProfileId);
+                return new AccountManagementModel(account.Id, account.Name, account.ProfileId, new ProfileManagementModel(account.ProfileId, account.Profile.Name));
 
             return null;
         }

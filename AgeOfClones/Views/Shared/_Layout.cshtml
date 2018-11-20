@@ -53,10 +53,11 @@
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="Management" asp-controller="Profile" asp-action="Index">Profiles</a></li>
-                    <li><a asp-area="Management" asp-controller="Profile" asp-action="CreateProfile">Create</a></li>
                     <li><a asp-area="Management" asp-controller="Profile" asp-action="IndexAccount">Accounts</a></li>
-                    @*<li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a asp-area="" asp-controller="Authorization" asp-action="Index" class="viewDialog" data-dialog-title="Login">Login</a></li>
+                    <li><a asp-area="" asp-controller="Authorization" asp-action="Logout">Logout</a></li>
                 </ul>
             </div>
         </div>
@@ -77,5 +78,27 @@
     </environment>
 
     @RenderSection("Scripts", required: false)
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+
+            $.ajaxSetup({ cache: false });
+
+            $(".viewDialog").on("click", function (e) {
+                e.preventDefault();
+
+                $("<div></div>")
+                    .addClass("dialog")
+                    .appendTo("body")
+                    .dialog({
+                        title: $(this).attr("data-dialog-title"),
+                        close: function () { $(this).remove() },
+                        modal: true
+                    })
+                    .load(this.href);
+            });
+        });
+    </script>
 </body>
 </html>

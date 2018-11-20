@@ -9,6 +9,9 @@ using Application.Management.Interfaces;
 using Application.Management.Services;
 using Application.Data.Repositories;
 using Infrastructure.Data.Repositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Application.Interfaces;
+using Application.Services;
 
 namespace AgeOfClones
 {
@@ -28,8 +31,17 @@ namespace AgeOfClones
             services.AddDbContext<ClonesContextEF>(options => options.UseSqlServer(connection));
 
             services.AddTransient<IProfileManagementService, ProfileManagementService>();
+            services.AddTransient<IAuthorizationService, AuthorizationService>();
+
             services.AddTransient<IProfileRepository, ProfileRepository>();
             services.AddTransient<IAccountRepository, AccountRepository>();
+
+            // установка конфигурации подключения
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options => //CookieAuthenticationOptions
+                {
+                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Authorization/Index");
+                });
 
             services.AddMvc();
         }
@@ -48,6 +60,8 @@ namespace AgeOfClones
             }
 
             app.UseStaticFiles();
+
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

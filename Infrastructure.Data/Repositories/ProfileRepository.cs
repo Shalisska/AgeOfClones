@@ -12,10 +12,14 @@ namespace Infrastructure.Data.Repositories
     public class ProfileRepository : IProfileRepository
     {
         private ClonesContextEF _db;
+        private IAccountRepository _accountRepository;
 
-        public ProfileRepository(ClonesContextEF context)
+        public ProfileRepository(
+            ClonesContextEF context,
+            IAccountRepository accountRepository)
         {
             _db = context;
+            _accountRepository = accountRepository;
         }
 
         public IEnumerable<ProfileManagementModel> GetAll()

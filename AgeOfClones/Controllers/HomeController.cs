@@ -6,21 +6,23 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AgeOfClones.Models;
 using Infrastructure.Data.EF;
+using Application.Interfaces;
 
 namespace AgeOfClones.Controllers
 {
     public class HomeController : Controller
     {
-        ClonesContextEF _clonesContext;
+        IAuthorizationService _authorizationService;
 
-        public HomeController(ClonesContextEF clonesContext)
+        public HomeController(IAuthorizationService authorizationService)
         {
-            _clonesContext = clonesContext;
+            _authorizationService = authorizationService;
         }
 
         public IActionResult Index()
         {
-            var model = _clonesContext.Profiles?.ToList();
+            var model = _authorizationService.GetProfiles();
+            ViewData["User"] = User.Identity.Name ?? "none";
 
             return View(model);
         }
