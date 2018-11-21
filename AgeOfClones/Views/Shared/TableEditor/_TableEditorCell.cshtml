@@ -18,7 +18,7 @@
             case ControlType.Select:
                 if (Model.SelectList != null && Model.SelectList.Count() > 0)
                 {
-                    <select id="@Model.PropertyName" name="@Model.PropertyName">
+                    <select class="form-control" id="@Model.PropertyName" name="@Model.PropertyName">
                         @foreach (SelectListItem item in Model.SelectList)
                         {
                             if (item.Selected)
@@ -34,7 +34,7 @@
                 }
                 break;
             default:
-                <input type="text" id="@Model.PropertyName" name="@Model.PropertyName" value="@Model.Value" @Html.Raw(GetValidationAttributes(Model.ValidationAttributes)) />
+                <input class="form-control" type="text" id="@Model.PropertyName" name="@Model.PropertyName" value="@Model.Value" @Html.Raw(GetValidationAttributes(Model.ValidationAttributes)) />
                 break;
         }
         if (Model.ControlType != ControlType.Hidden)

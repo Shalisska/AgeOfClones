@@ -11,8 +11,8 @@
 @foreach (var item in rows)
 {
 <tr>
-    <td>
-        @Html.ActionLink("", editAction, new { id = Int32.Parse(item.Key) }, new { @class = "viewDialog glyphicon glyphicon-pencil", data_dialog_title = "Редактирование модели", title = "Изменить" })
+    <td style="width:60px;">
+        @Html.ActionLink("", editAction, new { id = Int32.Parse(item.Key) }, new { @class = "viewDialog glyphicon glyphicon-pencil", data_dialog_title = "Редактирование модели", title = "Изменить", style="margin-right:10px;" })
         @Html.ActionLink("", deleteAction, new { id = Int32.Parse(item.Key) }, new { @class = "viewDialog glyphicon glyphicon-remove", data_dialog_title = "Удаление модели", title = "Удалить" })
     </td>
 

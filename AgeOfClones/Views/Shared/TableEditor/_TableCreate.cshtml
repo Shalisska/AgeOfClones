@@ -3,12 +3,14 @@
 @model IEnumerable<TableEditorCellModel>
 
 <form asp-action="@ViewData["Action"]">
-    <table>
+    <table class="table">
         @foreach(var item in Model)
         {
             <tr>
-                <td>
-                    @item.PropertyName
+                <td style="vertical-align:middle;">
+                    <label class="control-label">
+                        @item.PropertyName
+                    </label>
                 </td>
                 <td>
                     @{ Html.RenderPartial("TableEditor/_TableEditorCell", item); }
