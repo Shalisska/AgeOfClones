@@ -1,15 +1,12 @@
-﻿using System;
+﻿using AgeOfClones.Areas.Management.Models;
+using Application.Interfaces;
+using Application.Management.Interfaces;
+using Application.Management.Models;
+using Application.Models.TableEditor;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Application.Management.Interfaces;
-using Application.Interfaces;
-using Application.Management.Models;
-using AgeOfClones.Areas.Management.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Application.Models.TableEditor;
 
 namespace AgeOfClones.Areas.Management.Controllers
 {
@@ -55,7 +52,6 @@ namespace AgeOfClones.Areas.Management.Controllers
             var tableModel = GetTableModel(null, null);
             var model = tableModel.GetNewRow().ToList();
 
-            //var model = new ProfileManagementModel();
             ViewData["Action"] = "CreateProfile";
             return PartialView("TableEditor/_TableCreate", model);
         }

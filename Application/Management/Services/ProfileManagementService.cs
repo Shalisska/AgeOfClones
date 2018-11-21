@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.Data.Repositories;
 using Application.Management.Interfaces;
 using Application.Management.Models;
-using Application.Data.Repositories;
+using System.Collections.Generic;
 
 namespace Application.Management.Services
 {

@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\Management\Data\" />
-    <Folder Include="App_Data\" />
   </ItemGroup>
 
 </Project>

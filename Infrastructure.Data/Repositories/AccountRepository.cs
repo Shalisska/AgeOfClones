@@ -1,13 +1,11 @@
 ﻿using Application.Data.Repositories;
+using Application.Management.Models;
 using Infrastructure.Data.EF;
+using Infrastructure.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application.Management.Models;
-using Microsoft.EntityFrameworkCore;
-using Infrastructure.Data.Entities;
 
 namespace Infrastructure.Data.Repositories
 {

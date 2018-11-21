@@ -1,9 +1,5 @@
-﻿using System;
+﻿using Application.Management.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application.Management.Models;
 
 namespace Application.Management.Interfaces
 {
