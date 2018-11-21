@@ -13,6 +13,7 @@
 <table>
     <thead>
         <tr>
+            <th></th>
             @foreach (var field in table.Columns)
             {
                 <th>
@@ -22,6 +23,9 @@
         </tr>
     </thead>
     <tbody>
-        @{Html.RenderPartial("TableEditor/_TableRow");}
+        @if (table.Entities != null && table.Entities.Count() > 0)
+        {
+            Html.RenderPartial("TableEditor/_TableRow");
+        }
     </tbody>
 </table>

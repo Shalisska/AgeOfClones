@@ -31,11 +31,16 @@ namespace AgeOfClones
             services.AddDbContext<ClonesContextEF>(options => options.UseSqlServer(connection));
 
             services.AddTransient<IProfileManagementService, ProfileManagementService>();
+            services.AddTransient<IStockManagementService, StockManagementService>();
+
+
             services.AddTransient<IAuthorizationService, AuthorizationService>();
 
             services.AddTransient<ITableEditorService, TableEditorService>();
+
             services.AddTransient<IProfileRepository, ProfileRepository>();
             services.AddTransient<IAccountRepository, AccountRepository>();
+            services.AddTransient<IStockRepository, StockRepository>();
 
             // установка конфигурации подключения
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

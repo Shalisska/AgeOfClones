@@ -53,13 +53,15 @@
     <Compile Include="Interfaces\IAuthorizationService.cs" />
     <Compile Include="Interfaces\ITableEditorService.cs" />
     <Compile Include="Management\Interfaces\IProfileManagementService.cs" />
+    <Compile Include="Management\Interfaces\IStockManagementService.cs" />
     <Compile Include="Management\Models\AccountManagementModel.cs" />
     <Compile Include="Management\Models\CloneModel.cs" />
     <Compile Include="Management\Models\CurrencyModel.cs" />
     <Compile Include="Management\Models\ProfileManagementModel.cs" />
     <Compile Include="Management\Models\ResourceModel.cs" />
-    <Compile Include="Management\Models\StockModel.cs" />
+    <Compile Include="Management\Models\StockManagementModel.cs" />
     <Compile Include="Management\Services\ProfileManagementService.cs" />
+    <Compile Include="Management\Services\StockManagementService.cs" />
     <Compile Include="Models\TableEditor\TableEditorModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AuthorizationService.cs" />
