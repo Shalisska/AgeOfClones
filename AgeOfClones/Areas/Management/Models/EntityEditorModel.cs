@@ -131,7 +131,26 @@ namespace AgeOfClones.Areas.Management.Models
         }
     }
 
-    public class EntityEditorFieldModel
+    public class EntityEditorBaseFieldProperties
+    {
+        internal EntityEditorBaseFieldProperties() { }
+
+        internal EntityEditorBaseFieldProperties(
+            string propertyName,
+            ControlType controlType,
+            IDictionary<string, string> validationAttributes)
+        {
+            PropertyName = propertyName;
+            ControlType = controlType;
+            ValidationAttributes = validationAttributes;
+        }
+
+        public string PropertyName { get; set; }
+        public ControlType ControlType { get; set; }
+        public IDictionary<string, string> ValidationAttributes { get; set; }
+    }
+
+    public class EntityEditorFieldModel : EntityEditorBaseFieldProperties
     {
         internal EntityEditorFieldModel(
             string propertyName)
@@ -145,25 +164,19 @@ namespace AgeOfClones.Areas.Management.Models
             string propertyName,
             ControlType controlType,
             IDictionary<string, string> validationAttributes,
-            SelectList selectList)
+            SelectList selectList) : base(propertyName, controlType, validationAttributes)
         {
-            PropertyName = propertyName;
             Name = PropertyName;
             IsEditable = true;
-            ControlType = controlType;
-            ValidationAttributes = validationAttributes;
             SelectList = selectList;
         }
 
-        public string PropertyName { get; set; }
         public string Name { get; set; }
         public bool IsEditable { get; set; }
-        public ControlType ControlType { get; set; }
-        public IDictionary<string, string> ValidationAttributes { get; set; }
         public SelectList SelectList { get; set; }
     }
 
-    public class EntityEditorCurrentFieldModel
+    public class EntityEditorCurrentFieldModel : EntityEditorBaseFieldProperties
     {
         internal EntityEditorCurrentFieldModel(
             string propertyName,
@@ -181,23 +194,16 @@ namespace AgeOfClones.Areas.Management.Models
             bool isEditable,
             ControlType controlType,
             IDictionary<string, string> validationAttributes,
-            SelectList selectList)
+            SelectList selectList) : base(propertyName, controlType, validationAttributes)
         {
-            PropertyName = propertyName;
             Value = value;
             IsEditable = isEditable;
-            ControlType = controlType;
-            ValidationAttributes = validationAttributes;
             SelectList = GetSelectList(selectList, Value);
         }
 
-        public string PropertyName { get; set; }
         public string Value { get; set; }
 
         public bool IsEditable { get; set; }
-        public ControlType ControlType { get; set; }
-
-        public IDictionary<string, string> ValidationAttributes { get; set; }
         public SelectList SelectList { get; set; }
 
         private SelectList GetSelectList(SelectList selectList, object selectedItem)
