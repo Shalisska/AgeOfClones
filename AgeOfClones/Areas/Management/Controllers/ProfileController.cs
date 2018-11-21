@@ -37,11 +37,11 @@ namespace AgeOfClones.Areas.Management.Controllers
             return View("TableEditor/_Table", model);
         }
 
-        private EntityEditorModel GetTableModel(IEnumerable<ProfileManagementModel> profiles, ProfileManagementModel profile)
+        private TableEditorModel GetTableModel(IEnumerable<ProfileManagementModel> profiles, ProfileManagementModel profile)
         {
             var entityType = typeof(ProfileManagementModel);
 
-            var tableModel = new EntityEditorModel(entityType, "Id", profiles, profile);
+            var tableModel = new TableEditorModel(entityType, "Id", profiles, profile);
 
             tableModel.AddColumn("Id");
             tableModel.AddColumn("Name", ControlType.Input, _tableEditorService.GetValidationAttributes(entityType, "Name"), null);
@@ -52,7 +52,7 @@ namespace AgeOfClones.Areas.Management.Controllers
         public IActionResult CreateProfile()
         {
             var tableModel = GetTableModel(null, null);
-            var model = tableModel.GetNewEntity().ToList();
+            var model = tableModel.GetNewRow().ToList();
 
             //var model = new ProfileManagementModel();
             ViewData["Action"] = "CreateProfile";
@@ -86,7 +86,7 @@ namespace AgeOfClones.Areas.Management.Controllers
             var profile = _profileManagementService.GetProfile(id);
 
             var tableModel = GetTableModel(null, profile);
-            var model = tableModel.GetCurrentEntity().ToList();
+            var model = tableModel.GetCurrentRow().ToList();
 
             ViewData["Action"] = "EditProfile";
             return PartialView("TableEditor/_TableEdit", model);
@@ -156,11 +156,11 @@ namespace AgeOfClones.Areas.Management.Controllers
             return View("TableEditor/_Table", model);
         }
 
-        private EntityEditorModel GetAccountTableModel(IEnumerable<AccountManagementModel> accounts, AccountManagementModel account)
+        private TableEditorModel GetAccountTableModel(IEnumerable<AccountManagementModel> accounts, AccountManagementModel account)
         {
             var entityType = typeof(AccountManagementModel);
 
-            var tableModel = new EntityEditorModel(entityType, "Id", accounts, account);
+            var tableModel = new TableEditorModel(entityType, "Id", accounts, account);
             var profiles = _profileManagementService.GetProfiles().OrderBy(p => p.Name);
 
             tableModel.AddColumn("Id");
@@ -173,7 +173,7 @@ namespace AgeOfClones.Areas.Management.Controllers
         public IActionResult CreateAccount()
         {
             var tableModel = GetAccountTableModel(null, null);
-            var model = tableModel.GetNewEntity().ToList();
+            var model = tableModel.GetNewRow().ToList();
 
             ViewData["Action"] = "CreateAccount";
             return PartialView("TableEditor/_TableCreate", model);
@@ -204,7 +204,7 @@ namespace AgeOfClones.Areas.Management.Controllers
             var account = _profileManagementService.GetAccount(id);
 
             var tableModel = GetAccountTableModel(null, account);
-            var model = tableModel.GetCurrentEntity().ToList();
+            var model = tableModel.GetCurrentRow().ToList();
 
             ViewData["Action"] = "EditAccount";
             return PartialView("TableEditor/_TableEdit", model);

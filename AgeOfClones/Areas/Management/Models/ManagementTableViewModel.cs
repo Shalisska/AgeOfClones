@@ -9,7 +9,7 @@ namespace AgeOfClones.Areas.Management.Models
     public class ManagementTableViewModel
     {
         public ManagementTableViewModel(
-            EntityEditorModel table,
+            TableEditorModel table,
             string createActionName,
             string editActionName,
             string deleteActionName)
@@ -20,7 +20,7 @@ namespace AgeOfClones.Areas.Management.Models
             DeleteActionName = deleteActionName;
         }
 
-        public EntityEditorModel Table { get; set; }
+        public TableEditorModel Table { get; set; }
 
         public string CreateActionName { get; set; }
         public string EditActionName { get; set; }

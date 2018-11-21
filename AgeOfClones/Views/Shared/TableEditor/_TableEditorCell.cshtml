@@ -1,11 +1,10 @@
 ﻿@using AgeOfClones.Areas.Management.Models
 
-@model EntityEditorCurrentFieldModel
+@model TableEditorCellModel
 
 @{
     var value = string.IsNullOrEmpty(Model.Value) ? "0" : Model.Value;
     var selectItems = Model.SelectList;
-    var res = "";
  }
 
     @if (Model.IsEditable)

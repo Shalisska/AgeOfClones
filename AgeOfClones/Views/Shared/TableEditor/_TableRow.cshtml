@@ -3,7 +3,7 @@
 @model ManagementTableViewModel
 
 @{ 
-    var rows = Model.Table.GetEntitiesForDisplay();
+    var rows = Model.Table.GetRowsForDisplay();
     var editAction = Model.EditActionName;
     var deleteAction = Model.DeleteActionName;
 }

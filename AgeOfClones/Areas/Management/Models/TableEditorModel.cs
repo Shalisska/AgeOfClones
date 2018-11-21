@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace AgeOfClones.Areas.Management.Models
 {
-    public class EntityEditorModel
+    public class TableEditorModel
     {
-        public EntityEditorModel(
+        public TableEditorModel(
             Type entityType,
             string primaryKeyName,
             IEnumerable<object> entities,
@@ -19,34 +19,34 @@ namespace AgeOfClones.Areas.Management.Models
             PrimaryKeyName = primaryKeyName;
             Entities = entities;
             CurrentEntity = currentEntity;
-            Fields = new List<EntityEditorFieldModel>();
+            Columns = new List<TableEditorColumnModel>();
         }
 
         public Type EntityType { get; set; }
         public string PrimaryKeyName { get; set; }
         public IEnumerable<object> Entities { get; set; }
         public object CurrentEntity { get; set; }
-        public List<EntityEditorFieldModel> Fields { get; }
+        public List<TableEditorColumnModel> Columns { get; }
 
         public void AddColumn(string propertyName)
         {
-            Fields.Add(new EntityEditorFieldModel(propertyName));
+            Columns.Add(new TableEditorColumnModel(propertyName));
         }
 
         public void AddColumn(string propertyName, ControlType controlType, IDictionary<string, string> validationAttributes, SelectList selectList)
         {
-            Fields.Add(new EntityEditorFieldModel(propertyName, controlType, validationAttributes, selectList));
+            Columns.Add(new TableEditorColumnModel(propertyName, controlType, validationAttributes, selectList));
         }
 
-        public IDictionary<string, IEnumerable<EntityEditorCurrentFieldModel>> GetEntitiesForDisplay()
+        public IDictionary<string, IEnumerable<TableEditorCellModel>> GetRowsForDisplay()
         {
-            var rows = new Dictionary<string, IEnumerable<EntityEditorCurrentFieldModel>>();
+            var rows = new Dictionary<string, IEnumerable<TableEditorCellModel>>();
 
             foreach (var item in Entities)
             {
                 var id = GetCurrentEntityValue(item, PrimaryKeyName).ToString();
 
-                var rowCells = GetEntityFieldsForDisplay(item);
+                var rowCells = GetCellsForDisplay(item);
 
                 rows.Add(id.ToString(), rowCells);
             }
@@ -54,15 +54,15 @@ namespace AgeOfClones.Areas.Management.Models
             return rows;
         }
 
-        public IDictionary<string, IEnumerable<EntityEditorCurrentFieldModel>> GetEntities()
+        public IDictionary<string, IEnumerable<TableEditorCellModel>> GetRows()
         {
-            var rows = new Dictionary<string, IEnumerable<EntityEditorCurrentFieldModel>>();
+            var rows = new Dictionary<string, IEnumerable<TableEditorCellModel>>();
 
             foreach (var item in Entities)
             {
                 var id = GetCurrentEntityValue(item, PrimaryKeyName).ToString();
 
-                var rowCells = GetEntityFields(item);
+                var rowCells = GetCells(item);
 
                 rows.Add(id.ToString(), rowCells);
             }
@@ -70,23 +70,23 @@ namespace AgeOfClones.Areas.Management.Models
             return rows;
         }
 
-        public IEnumerable<EntityEditorCurrentFieldModel> GetCurrentEntity()
+        public IEnumerable<TableEditorCellModel> GetCurrentRow()
         {
-            var entity = GetEntityFields(CurrentEntity);
+            var entity = GetCells(CurrentEntity);
 
             return entity;
         }
 
-        public IEnumerable<EntityEditorCurrentFieldModel> GetNewEntity()
+        public IEnumerable<TableEditorCellModel> GetNewRow()
         {
-            var entity = GetEntityFieldsForCreate();
+            var entity = GetCellsForNewRow();
 
             return entity;
         }
 
-        private IEnumerable<EntityEditorCurrentFieldModel> GetEntityFieldsForDisplay(object entity)
+        private IEnumerable<TableEditorCellModel> GetCellsForDisplay(object entity)
         {
-            var fields = Fields.Select(field => new EntityEditorCurrentFieldModel(
+            var fields = Columns.Select(field => new TableEditorCellModel(
                     field.PropertyName,
                     GetCurrentEntityValue(entity, field.PropertyName).ToString(),
                     field.SelectList
@@ -95,9 +95,9 @@ namespace AgeOfClones.Areas.Management.Models
             return fields;
         }
 
-        private IEnumerable<EntityEditorCurrentFieldModel> GetEntityFields(object entity)
+        private IEnumerable<TableEditorCellModel> GetCells(object entity)
         {
-            var fields = Fields.Select(field => new EntityEditorCurrentFieldModel(
+            var fields = Columns.Select(field => new TableEditorCellModel(
                     field.PropertyName,
                     GetCurrentEntityValue(entity, field.PropertyName).ToString(),
                     field.IsEditable,
@@ -109,9 +109,9 @@ namespace AgeOfClones.Areas.Management.Models
             return fields;
         }
 
-        private IEnumerable<EntityEditorCurrentFieldModel> GetEntityFieldsForCreate()
+        private IEnumerable<TableEditorCellModel> GetCellsForNewRow()
         {
-            var fields = Fields.Select(field => new EntityEditorCurrentFieldModel(
+            var fields = Columns.Select(field => new TableEditorCellModel(
                     field.PropertyName,
                     null,
                     field.IsEditable,
@@ -131,11 +131,11 @@ namespace AgeOfClones.Areas.Management.Models
         }
     }
 
-    public class EntityEditorBaseFieldProperties
+    public class TableEditorBaseFieldProperties
     {
-        internal EntityEditorBaseFieldProperties() { }
+        internal TableEditorBaseFieldProperties() { }
 
-        internal EntityEditorBaseFieldProperties(
+        internal TableEditorBaseFieldProperties(
             string propertyName,
             ControlType controlType,
             IDictionary<string, string> validationAttributes)
@@ -150,9 +150,9 @@ namespace AgeOfClones.Areas.Management.Models
         public IDictionary<string, string> ValidationAttributes { get; set; }
     }
 
-    public class EntityEditorFieldModel : EntityEditorBaseFieldProperties
+    public class TableEditorColumnModel : TableEditorBaseFieldProperties
     {
-        internal EntityEditorFieldModel(
+        internal TableEditorColumnModel(
             string propertyName)
         {
             PropertyName = propertyName;
@@ -160,7 +160,7 @@ namespace AgeOfClones.Areas.Management.Models
             IsEditable = false;
         }
 
-        internal EntityEditorFieldModel(
+        internal TableEditorColumnModel(
             string propertyName,
             ControlType controlType,
             IDictionary<string, string> validationAttributes,
@@ -176,9 +176,9 @@ namespace AgeOfClones.Areas.Management.Models
         public SelectList SelectList { get; set; }
     }
 
-    public class EntityEditorCurrentFieldModel : EntityEditorBaseFieldProperties
+    public class TableEditorCellModel : TableEditorBaseFieldProperties
     {
-        internal EntityEditorCurrentFieldModel(
+        internal TableEditorCellModel(
             string propertyName,
             string value,
             SelectList selectList)
@@ -188,7 +188,7 @@ namespace AgeOfClones.Areas.Management.Models
             SelectList = GetSelectList(selectList, Value);
         }
 
-        internal EntityEditorCurrentFieldModel(
+        internal TableEditorCellModel(
             string propertyName,
             string value,
             bool isEditable,
