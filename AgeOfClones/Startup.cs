@@ -33,7 +33,7 @@ namespace AgeOfClones
             services.AddTransient<IProfileManagementService, ProfileManagementService>();
             services.AddTransient<IAuthorizationService, AuthorizationService>();
 
-            services.AddTransient<IEntityEditorService, EntityEditorService>();
+            services.AddTransient<ITableEditorService, TableEditorService>();
             services.AddTransient<IProfileRepository, ProfileRepository>();
             services.AddTransient<IAccountRepository, AccountRepository>();
 

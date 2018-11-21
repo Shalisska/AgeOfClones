@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AgeOfClones.Areas.Management.Models
+namespace Application.Models.TableEditor
 {
     public class TableEditorModel
     {
@@ -28,12 +28,12 @@ namespace AgeOfClones.Areas.Management.Models
         public object CurrentEntity { get; set; }
         public List<TableEditorColumnModel> Columns { get; }
 
-        public void AddColumn(string propertyName)
+        internal void AddColumn(string propertyName)
         {
             Columns.Add(new TableEditorColumnModel(propertyName));
         }
 
-        public void AddColumn(string propertyName, ControlType controlType, IDictionary<string, string> validationAttributes, SelectList selectList)
+        internal void AddColumn(string propertyName, ControlType controlType, IDictionary<string, string> validationAttributes, SelectList selectList)
         {
             Columns.Add(new TableEditorColumnModel(propertyName, controlType, validationAttributes, selectList));
         }

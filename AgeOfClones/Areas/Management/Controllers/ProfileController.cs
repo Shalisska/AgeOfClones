@@ -9,6 +9,7 @@ using Application.Interfaces;
 using Application.Management.Models;
 using AgeOfClones.Areas.Management.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Application.Models.TableEditor;
 
 namespace AgeOfClones.Areas.Management.Controllers
 {
@@ -16,11 +17,11 @@ namespace AgeOfClones.Areas.Management.Controllers
     public class ProfileController : Controller
     {
         IProfileManagementService _profileManagementService;
-        IEntityEditorService _tableEditorService;
+        ITableEditorService _tableEditorService;
 
         public ProfileController(
             IProfileManagementService profileManagementService,
-            IEntityEditorService tableEditorService)
+            ITableEditorService tableEditorService)
         {
             _profileManagementService = profileManagementService;
             _tableEditorService = tableEditorService;
@@ -43,8 +44,8 @@ namespace AgeOfClones.Areas.Management.Controllers
 
             var tableModel = new TableEditorModel(entityType, "Id", profiles, profile);
 
-            tableModel.AddColumn("Id");
-            tableModel.AddColumn("Name", ControlType.Input, _tableEditorService.GetValidationAttributes(entityType, "Name"), null);
+            _tableEditorService.AddColumn(tableModel, "Id");
+            _tableEditorService.AddColumn(tableModel, "Name", ControlType.Input, null);
 
             return tableModel;
         }
@@ -163,9 +164,9 @@ namespace AgeOfClones.Areas.Management.Controllers
             var tableModel = new TableEditorModel(entityType, "Id", accounts, account);
             var profiles = _profileManagementService.GetProfiles().OrderBy(p => p.Name);
 
-            tableModel.AddColumn("Id");
-            tableModel.AddColumn("Name", ControlType.Input, _tableEditorService.GetValidationAttributes(entityType, "Name"), null);
-            tableModel.AddColumn("ProfileId", ControlType.Select, _tableEditorService.GetValidationAttributes(entityType, "ProfileId"), new SelectList(profiles, "Id", "Name"));
+            _tableEditorService.AddColumn(tableModel, "Id");
+            _tableEditorService.AddColumn(tableModel, "Name", ControlType.Input, null);
+            _tableEditorService.AddColumn(tableModel, "ProfileId", ControlType.Select, new SelectList(profiles, "Id", "Name"));
 
             return tableModel;
         }
