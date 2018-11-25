@@ -17,6 +17,7 @@ namespace Infrastructure.Data.EF
         public DbSet<Resource> Resources { get; set; }
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<CurrencyExchangeRate> CurrencyExchanges { get; set; }
+        public DbSet<SocialStatus> SocialStatuses { get; set; }
         public DbSet<Clone> Clones { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
