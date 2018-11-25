@@ -118,12 +118,28 @@
     <Compile Include="Migrations\20181124232905_ExchangeRate-Buy-Sell.designer.cs">
       <DependentUpon>20181124232905_ExchangeRate-Buy-Sell.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20181125125013_ResourcePerformanceToInt.cs" />
+    <Compile Include="Migrations\20181125125013_ResourcePerformanceToInt.designer.cs">
+      <DependentUpon>20181125125013_ResourcePerformanceToInt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20181125130521_AddPrescision.cs" />
+    <Compile Include="Migrations\20181125130521_AddPrescision.designer.cs">
+      <DependentUpon>20181125130521_AddPrescision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20181125130654_AddPrescision4.cs" />
+    <Compile Include="Migrations\20181125130654_AddPrescision4.designer.cs">
+      <DependentUpon>20181125130654_AddPrescision4.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\ClonesContextEFModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AccountRepository.cs" />
     <Compile Include="Repositories\CurrencyRepository.cs" />
     <Compile Include="Repositories\ProfileRepository.cs" />
+    <Compile Include="Repositories\ResourceRepository.cs" />
     <Compile Include="Repositories\StockRepository.cs" />
+    <Compile Include="UnitsOfWork\ResourceUOW.cs" />
+    <Compile Include="XML\Entities\ResourceXML.cs" />
+    <Compile Include="XML\Repositories\ResourceRepositoryXML.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

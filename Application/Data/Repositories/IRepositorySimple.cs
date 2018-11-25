@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Application.Data.Repositories
 {
-    public interface IRepositorySimple<T> : IDisposable
+    public interface IRepositorySimple<T>
         where T : class
     {
         IEnumerable<T> GetAll();

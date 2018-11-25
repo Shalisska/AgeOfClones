@@ -1,0 +1,9 @@
+﻿@using AgeOfClones.Areas.Management.Models
+@using Application.Management.Models
+
+@model ManagementTableViewModel
+
+@{ Html.RenderPartial("TableEditor/_Table"); }
+
+<a asp-area="Management" asp-controller="Resource" asp-action="UpdateResourcesFromXML">Update Resources from site</a>
+

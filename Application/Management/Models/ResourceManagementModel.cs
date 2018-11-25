@@ -1,9 +1,11 @@
-﻿namespace Infrastructure.Data.Entities
+﻿
+
+namespace Application.Management.Models
 {
-    public class Resource
+    public class ResourceManagementModel
     {
-        public Resource() { }
-        public Resource(
+        public ResourceManagementModel() { }
+        public ResourceManagementModel(
             int id,
             string name,
             decimal priceBase,
@@ -30,7 +32,5 @@
 
 
         public int StockId { get; set; }
-
-        public Stock Stock { get; set; }
     }
 }

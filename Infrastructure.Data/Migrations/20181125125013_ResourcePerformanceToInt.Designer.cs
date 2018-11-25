@@ -11,9 +11,10 @@ using System;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ClonesContextEF))]
-    partial class ClonesContextEFModelSnapshot : ModelSnapshot
+    [Migration("20181125125013_ResourcePerformanceToInt")]
+    partial class ResourcePerformanceToInt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,8 +50,7 @@ namespace Infrastructure.Data.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<decimal>("Performance")
-                        .HasColumnType("decimal(18, 4)");
+                    b.Property<decimal>("Performance");
 
                     b.HasKey("Id");
 
@@ -81,11 +81,9 @@ namespace Infrastructure.Data.Migrations
 
                     b.Property<int>("CurrencyPairId");
 
-                    b.Property<decimal>("Buy")
-                        .HasColumnType("decimal(18, 4)");
+                    b.Property<decimal>("Buy");
 
-                    b.Property<decimal>("Sell")
-                        .HasColumnType("decimal(18, 4)");
+                    b.Property<decimal>("Sell");
 
                     b.HasKey("CurrencyId", "CurrencyPairId");
 
@@ -113,11 +111,9 @@ namespace Infrastructure.Data.Migrations
 
                     b.Property<int>("Performance");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18, 4)");
+                    b.Property<decimal>("Price");
 
-                    b.Property<decimal>("PriceBase")
-                        .HasColumnType("decimal(18, 4)");
+                    b.Property<decimal>("PriceBase");
 
                     b.Property<int>("StockId");
 

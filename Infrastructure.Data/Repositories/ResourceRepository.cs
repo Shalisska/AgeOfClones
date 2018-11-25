@@ -1,13 +1,11 @@
-﻿using Application.Adapters;
-using Application.Data.Repositories;
-using Application.Data;
+﻿using Application.Data.Repositories;
+using Application.Management.Models;
 using Infrastructure.Data.EF;
 using Infrastructure.Data.Entities;
-using Infrastructure.Data.Helpers;
 using Infrastructure.Data.XML.Entities;
 using Infrastructure.Data.XML.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 
 namespace Infrastructure.Data.Repositories
@@ -23,48 +21,69 @@ namespace Infrastructure.Data.Repositories
             _repositoryXML = new ResourceRepositoryXML(@"D:\projects\SeleniumTest\SeleniumTest\bin\Debug\Resources.xml");
         }
 
-        public IEnumerable<IResourceAdapter> GetAll()
+        public IEnumerable<ResourceManagementModel> GetAll()
         {
-            return _db.Resources.ToList();
+            var items = _db.Resources;
+
+            if (items != null && items.Count() > 0)
+                return items.Select(item => new ResourceManagementModel(
+                    item.Id,
+                    item.Name,
+                    item.PriceBase,
+                    item.Price,
+                    item.Performance,
+                    item.StockId));
+
+            return null;
         }
 
-        public IEnumerable<IResourceAdapter> GetAllWithParameters(TableQueryParameters parameters)
+        public ResourceManagementModel Get(int id)
         {
-            var tableName = "Resources";
+            var item = _db.Resources.Find(id);
 
-            var specialConditions = new List<ConditionsForFK>()
-            {
-                new ConditionsForFK(
-                "StockId",
-                " join Stocks on Stocks.Id=Resources.StockId",
-                "Stocks.Name")
-            };
+            if (item != null)
+                return new ResourceManagementModel(
+                    item.Id,
+                    item.Name,
+                    item.PriceBase,
+                    item.Price,
+                    item.Performance,
+                    item.StockId);
 
-            var queryBuilder = new QueryBuilder<Resource>(tableName, parameters, specialConditions);
-            var query = queryBuilder.GetQueryWithParameters();
-            return _db.Resources.SqlQuery(query);
+            return null;
         }
 
-        public IResourceAdapter Get(int id)
+        public void Create(ResourceManagementModel item)
         {
-            return _db.Resources.Find(id);
+            var newItem = new Resource(
+                item.Id,
+                item.Name,
+                item.PriceBase,
+                item.Price,
+                item.Performance,
+                item.StockId);
+
+            _db.Resources.Add(newItem);
         }
 
-        public void Create(IResourceAdapter item)
+        public void Update(ResourceManagementModel item)
         {
-            _db.Resources.Add(new Resource(item));
-        }
+            var newItem = new Resource(
+                item.Id,
+                item.Name,
+                item.PriceBase,
+                item.Price,
+                item.Performance,
+                item.StockId);
 
-        public void Update(IResourceAdapter item)
-        {
-            _db.Entry(new Resource(item)).State = EntityState.Modified;
+            _db.Entry(newItem).State = EntityState.Modified;
         }
 
         public void Delete(int id)
         {
-            var resource = _db.Resources.Find(id);
-            if (resource != null)
-                _db.Resources.Remove(resource);
+            var item = _db.Resources.Find(id);
+            if (item != null)
+                _db.Resources.Remove(item);
         }
 
         public void UpdateFromXML()
@@ -72,7 +91,7 @@ namespace Infrastructure.Data.Repositories
             IEnumerable<ResourceXML> resourcesXML = _repositoryXML.GetResourcesFromXML();
             IEnumerable<Resource> resources = _db.Resources.ToList();
 
-            foreach(var item in resourcesXML)
+            foreach (var item in resourcesXML)
             {
                 var resource = resources.Where(r => r.Name.Trim() == item.Name).FirstOrDefault();
 
@@ -81,9 +100,9 @@ namespace Infrastructure.Data.Repositories
                     var newResource = new Resource()
                     {
                         Name = item.Name,
-                        PriceBase=item.PriceBase,
-                        Price=item.Price,
-                        StockId=item.StockId
+                        PriceBase = item.PriceBase,
+                        Price = item.Price,
+                        StockId = item.StockId + 1
                     };
                     _db.Resources.Add(newResource);
                 }

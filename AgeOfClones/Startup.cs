@@ -1,17 +1,18 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Application.Data.Repositories;
+using Application.Data.UnitsOfWork;
+using Application.Interfaces;
+using Application.Management.Interfaces;
+using Application.Management.Services;
+using Application.Services;
+using Infrastructure.Data.EF;
+using Infrastructure.Data.Repositories;
+using Infrastructure.Data.UnitsOfWork;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Infrastructure.Data.EF;
-using System;
-using Application.Management.Interfaces;
-using Application.Management.Services;
-using Application.Interfaces;
-using Application.Services;
-using Application.Data.Repositories;
-using Infrastructure.Data.Repositories;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace AgeOfClones
 {
@@ -33,6 +34,7 @@ namespace AgeOfClones
             services.AddTransient<IProfileManagementService, ProfileManagementService>();
             services.AddTransient<IStockManagementService, StockManagementService>();
             services.AddTransient<ICurrencyManagementService, CurrencyManagementService>();
+            services.AddTransient<IResourceManagementService, ResourceManagementService>();
 
 
             services.AddTransient<IAuthorizationService, AuthorizationService>();
@@ -43,6 +45,9 @@ namespace AgeOfClones
             services.AddTransient<IAccountRepository, AccountRepository>();
             services.AddTransient<IStockRepository, StockRepository>();
             services.AddTransient<ICurrencyRepository, CurrencyRepository>();
+            services.AddTransient<IResourceRepository, ResourceRepository>();
+
+            services.AddTransient<IResourceUOW, ResourceUOW>();
 
             // установка конфигурации подключения
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

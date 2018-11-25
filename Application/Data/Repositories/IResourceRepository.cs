@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using Application.Management.Models;
+﻿using Application.Management.Models;
 
 namespace Application.Data.Repositories
 {
-    public interface IResourceRepository : IRepositorySimple<ResourceModel>
+    public interface IResourceRepository : IRepositorySimple<ResourceManagementModel>
     {
         //IEnumerable<IResourceAdapter> GetAllWithParameters(TableQueryParameters parameters);
 
