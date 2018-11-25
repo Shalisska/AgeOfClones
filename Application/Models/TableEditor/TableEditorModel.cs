@@ -104,11 +104,7 @@ namespace Application.Models.TableEditor
         {
             var fields = Columns.Select(field => new TableEditorCellModel(
                     field.PropertyName,
-                    parameters != null && parameters.ContainsKey(field.PropertyName) ?
-                        parameters[field.PropertyName] :
-                        IsNumber(field.PropertyName) ?
-                            0.ToString() :
-                            string.Empty,
+                    GetValueForNewEntity(parameters, field.PropertyName, field.ControlType),
                     field.IsEditable,
                     field.ControlType,
                     field.ValidationAttributes,
@@ -123,6 +119,20 @@ namespace Application.Models.TableEditor
             if (propertyName == null)
                 return null;
             return EntityType.GetProperty(propertyName).GetValue(entity, null);
+        }
+
+        private string GetValueForNewEntity(IDictionary<string, string> parameters, string propertyName, ControlType controlType)
+        {
+            if (parameters != null && parameters.ContainsKey(propertyName))
+                return parameters[propertyName];
+
+            if (controlType == ControlType.Checkbox)
+                return false.ToString();
+
+            if (IsNumber(propertyName))
+                return 0.ToString();
+
+            return string.Empty;
         }
 
         private bool IsNumber(string propertyName)
@@ -244,6 +254,7 @@ namespace Application.Models.TableEditor
     {
         Hidden = 1,
         Input = 2,
-        Select = 3
+        Select = 3,
+        Checkbox = 4
     }
 }

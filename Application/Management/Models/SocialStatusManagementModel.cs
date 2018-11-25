@@ -13,7 +13,7 @@
             decimal referralPaymentsClonero,
             int licenseCount,
             int licensePrice,
-            int timeToGetLicence,
+            int timeToGetLicenceHours,
             int priceForAllLicenses,
             bool haveKingdom,
             int universityLevel,
@@ -33,7 +33,7 @@
             ReferralPaymentsClonero = referralPaymentsClonero;
             LicenseCount = licenseCount;
             LicensePrice = licensePrice;
-            TimeToGetLicence = timeToGetLicence;
+            TimeToGetLicenceHours = timeToGetLicenceHours;
             PriceForAllLicenses = priceForAllLicenses;
             HaveKingdom = haveKingdom;
             UniversityLevel = universityLevel;
@@ -83,7 +83,7 @@
         /// <summary>
         /// Время на получение лицензии
         /// </summary>
-        public int TimeToGetLicence { get; set; }
+        public int TimeToGetLicenceHours { get; set; }
 
         /// <summary>
         /// Общая стоимость получения лицензий

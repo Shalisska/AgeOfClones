@@ -29,7 +29,7 @@ namespace Infrastructure.Data.Repositories
                 item.ReferralPaymentsClonero,
                 item.LicenseCount,
                 item.LicensePrice,
-                item.TimeToGetLicence,
+                item.TimeToGetLicenceHours,
                 item.HaveKingdom,
                 item.UniversityLevel,
                 item.HavePalace,

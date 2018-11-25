@@ -93,7 +93,8 @@
                     .dialog({
                         title: $(this).attr("data-dialog-title"),
                         close: function () { $(this).remove() },
-                        modal: true
+                        modal: true,
+                        width: "auto"
                     })
                     .load(this.href);
             });
