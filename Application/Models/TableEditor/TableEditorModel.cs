@@ -104,7 +104,11 @@ namespace Application.Models.TableEditor
         {
             var fields = Columns.Select(field => new TableEditorCellModel(
                     field.PropertyName,
-                    parameters != null && parameters.ContainsKey(field.PropertyName) ? parameters[field.PropertyName] : null,
+                    parameters != null && parameters.ContainsKey(field.PropertyName) ?
+                        parameters[field.PropertyName] :
+                        IsNumber(field.PropertyName) ?
+                            0.ToString() :
+                            string.Empty,
                     field.IsEditable,
                     field.ControlType,
                     field.ValidationAttributes,
@@ -119,6 +123,16 @@ namespace Application.Models.TableEditor
             if (propertyName == null)
                 return null;
             return EntityType.GetProperty(propertyName).GetValue(entity, null);
+        }
+
+        private bool IsNumber(string propertyName)
+        {
+            var propertyType = EntityType.GetProperty(propertyName).PropertyType;
+
+            if (propertyType == typeof(int) || propertyType == typeof(decimal) || propertyType == typeof(float))
+                return true;
+
+            return false;
         }
     }
 
