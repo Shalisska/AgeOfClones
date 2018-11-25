@@ -3,7 +3,10 @@
 
 @model ManagementTableViewModel
 
-@{ Html.RenderPartial("TableEditor/_Table"); }
+<p style="margin-top:10px;">
+    <a asp-area="Management" asp-controller="Resource" asp-action="UpdateResourcesFromXML">Update Resources from site</a>
+</p>
 
-<a asp-area="Management" asp-controller="Resource" asp-action="UpdateResourcesFromXML">Update Resources from site</a>
+
+@{ Html.RenderPartial("TableEditor/_Table"); }
 
