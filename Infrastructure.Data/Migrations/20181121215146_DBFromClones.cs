@@ -5,31 +5,21 @@ using System.Collections.Generic;
 
 namespace Infrastructure.Data.Migrations
 {
-    public partial class AddTablesFromClones : Migration
+    public partial class DBFromClones : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Clones",
+                name: "Profiles",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    AccountId = table.Column<int>(nullable: false),
-                    Age = table.Column<int>(nullable: false),
-                    DateOfCreation = table.Column<DateTime>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Performance = table.Column<decimal>(nullable: false)
+                    Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Clones", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Clones_Accounts_AccountId",
-                        column: x => x.AccountId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_Profiles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -46,13 +36,32 @@ namespace Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Accounts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true),
+                    ProfileId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Accounts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Accounts_Profiles_ProfileId",
+                        column: x => x.ProfileId,
+                        principalTable: "Profiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Currencies",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false),
-                    BuyPrice = table.Column<decimal>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true),
-                    SellPrice = table.Column<decimal>(nullable: false),
                     StockId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -89,6 +98,53 @@ namespace Infrastructure.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Clones",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    AccountId = table.Column<int>(nullable: false),
+                    Age = table.Column<int>(nullable: false),
+                    DateOfCreation = table.Column<DateTime>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Performance = table.Column<decimal>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clones", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Clones_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CurrencyExchanges",
+                columns: table => new
+                {
+                    CurrencyId = table.Column<int>(nullable: false),
+                    CurrencyPairId = table.Column<int>(nullable: false),
+                    Price = table.Column<decimal>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CurrencyExchanges", x => new { x.CurrencyId, x.CurrencyPairId });
+                    table.ForeignKey(
+                        name: "FK_CurrencyExchanges_Currencies_CurrencyId",
+                        column: x => x.CurrencyId,
+                        principalTable: "Currencies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Accounts_ProfileId",
+                table: "Accounts",
+                column: "ProfileId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Clones_AccountId",
                 table: "Clones",
@@ -111,10 +167,19 @@ namespace Infrastructure.Data.Migrations
                 name: "Clones");
 
             migrationBuilder.DropTable(
-                name: "Currencies");
+                name: "CurrencyExchanges");
 
             migrationBuilder.DropTable(
                 name: "Resources");
+
+            migrationBuilder.DropTable(
+                name: "Accounts");
+
+            migrationBuilder.DropTable(
+                name: "Currencies");
+
+            migrationBuilder.DropTable(
+                name: "Profiles");
 
             migrationBuilder.DropTable(
                 name: "Stocks");

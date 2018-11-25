@@ -1,5 +1,4 @@
-﻿
-using Application.Management.Models;
+﻿using Application.Management.Models;
 
 namespace Application.Data.Repositories
 {

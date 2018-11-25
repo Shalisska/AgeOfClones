@@ -9,10 +9,10 @@ namespace Application.Interfaces
     {
         IDictionary<string, string> GetValidationAttributes(Type entityType, string propertyName);
 
-        TableEditorModel GetTable(Type entityType, string primaryKeyName, IEnumerable<object> entities, object entity);
+        TableEditorModel GetTable(string tableName, Type entityType, string primaryKeyName, IEnumerable<object> entities, object entity);
 
-        void AddColumn(TableEditorModel table, string propertyName);
+        void AddColumn(TableEditorModel table, string propertyName, string name);
 
-        void AddColumn(TableEditorModel table, string propertyName, ControlType controlType, SelectList selectListItems);
+        void AddColumn(TableEditorModel table, string propertyName, string name, ControlType controlType, SelectList selectListItems);
     }
 }

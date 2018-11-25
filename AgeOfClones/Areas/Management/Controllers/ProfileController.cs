@@ -39,10 +39,10 @@ namespace AgeOfClones.Areas.Management.Controllers
         {
             var entityType = typeof(ProfileManagementModel);
 
-            var tableModel = new TableEditorModel(entityType, "Id", profiles, profile);
+            var tableModel = new TableEditorModel("Profiles", entityType, "Id", profiles, profile);
 
-            _tableEditorService.AddColumn(tableModel, "Id");
-            _tableEditorService.AddColumn(tableModel, "Name", ControlType.Input, null);
+            _tableEditorService.AddColumn(tableModel, "Id", null);
+            _tableEditorService.AddColumn(tableModel, "Name", null, ControlType.Input, null);
 
             return tableModel;
         }
@@ -157,12 +157,12 @@ namespace AgeOfClones.Areas.Management.Controllers
         {
             var entityType = typeof(AccountManagementModel);
 
-            var tableModel = new TableEditorModel(entityType, "Id", accounts, account);
+            var tableModel = new TableEditorModel("Accounts", entityType, "Id", accounts, account);
             var profiles = _profileManagementService.GetProfiles().OrderBy(p => p.Name);
 
-            _tableEditorService.AddColumn(tableModel, "Id");
-            _tableEditorService.AddColumn(tableModel, "Name", ControlType.Input, null);
-            _tableEditorService.AddColumn(tableModel, "ProfileId", ControlType.Select, new SelectList(profiles, "Id", "Name"));
+            _tableEditorService.AddColumn(tableModel, "Id", null);
+            _tableEditorService.AddColumn(tableModel, "Name", null, ControlType.Input, null);
+            _tableEditorService.AddColumn(tableModel, "ProfileId", null, ControlType.Select, new SelectList(profiles, "Id", "Name"));
 
             return tableModel;
         }

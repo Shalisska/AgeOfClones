@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application.Adapters;
-using Application.Data.Repositories;
+﻿using Application.Data.Repositories;
+using Application.Management.Models;
 using Infrastructure.Data.EF;
 using Infrastructure.Data.Entities;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Infrastructure.Data.Repositories
 {
@@ -20,33 +18,115 @@ namespace Infrastructure.Data.Repositories
             _db = context;
         }
 
-        public IEnumerable<ICurrencyAdapter> GetAll()
+        public IEnumerable<CurrencyManagementModel> GetAll()
         {
-            return _db.Currency.ToList();
+            var currencies = _db.Currencies;
+
+            if (currencies != null && currencies.Count() > 0)
+                return currencies.Select(c => new CurrencyManagementModel(
+                    c.Id,
+                    c.Name,
+                    c.ExchangeRates.Select(r => new CurrencyExchangeRateManagementModel(
+                        r.CurrencyId,
+                        r.CurrencyPairId,
+                        r.Buy,
+                        r.Sell)),
+                    c.StockId));
+
+            return null;
         }
 
-        public ICurrencyAdapter Get(int id)
+        public CurrencyManagementModel Get(int id)
         {
-            return _db.Currency.Find(id);
+            var currency = _db.Currencies.Include(c=>c.ExchangeRates).FirstOrDefault(c => c.Id == id);
+
+            if (currency != null)
+                return new CurrencyManagementModel(
+                    currency.Id,
+                    currency.Name,
+                    currency.ExchangeRates.Select(r => new CurrencyExchangeRateManagementModel(
+                        r.CurrencyId,
+                        r.CurrencyPairId,
+                        r.Buy,
+                        r.Sell)),
+                    currency.StockId);
+
+            return null;
         }
 
-        public void Create(ICurrencyAdapter item)
+        public void Create(CurrencyManagementModel item)
         {
-            Currency money = new Currency(item);
-            _db.Currency.Add(money);
+            var currency = new Currency(item.Id, item.Name, item.StockId);
+            _db.Currencies.Add(currency);
+
+            _db.SaveChanges();
         }
 
-        public void Update(ICurrencyAdapter item)
+        public void Update(CurrencyManagementModel item)
         {
-            Currency money = new Currency(item);
-            _db.Entry(money).State= EntityState.Modified;
+            var currency = new Currency(item.Id, item.Name, item.StockId);
+            _db.Entry(currency).State= EntityState.Modified;
+
+            _db.SaveChanges();
         }
 
         public void Delete(int id)
         {
-            Currency money = _db.Currency.Find(id);
-            if (money != null)
-                _db.Currency.Remove(money);
+            var currency = _db.Currencies.Find(id);
+            if (currency != null)
+            {
+                _db.Currencies.Remove(currency);
+                _db.SaveChanges();
+            }
         }
+
+        public void CreateExchangeRate(int currentCurrencyId, int currencyId, decimal buy, decimal sell)
+        {
+            var exchangeRate = new CurrencyExchangeRate(currentCurrencyId, currencyId, buy, sell);
+
+            _db.CurrencyExchanges.Add(exchangeRate);
+            _db.SaveChanges();
+        }
+
+        public void UpdateExchangeRate(int currentCurrencyId, int currencyId, decimal buy, decimal sell)
+        {
+            var exchangeRate = new CurrencyExchangeRate(currentCurrencyId, currencyId, buy, sell);
+            _db.Entry(exchangeRate).State = EntityState.Modified;
+            _db.SaveChanges();
+        }
+
+        public void DeleteExchangeRate(int currentCurrencyId, int currencyId)
+        {
+            var exchangeRate = _db.CurrencyExchanges.FirstOrDefault(r => r.CurrencyId == currentCurrencyId && r.CurrencyPairId == currencyId);
+            if (exchangeRate != null)
+            {
+                _db.CurrencyExchanges.Remove(exchangeRate);
+                _db.SaveChanges();
+            }
+        }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _db.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

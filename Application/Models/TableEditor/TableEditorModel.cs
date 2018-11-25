@@ -8,11 +8,13 @@ namespace Application.Models.TableEditor
     public class TableEditorModel
     {
         public TableEditorModel(
+            string tableName,
             Type entityType,
             string primaryKeyName,
             IEnumerable<object> entities,
             object currentEntity)
         {
+            TableName = tableName;
             EntityType = entityType;
             PrimaryKeyName = primaryKeyName;
             Entities = entities;
@@ -20,50 +22,37 @@ namespace Application.Models.TableEditor
             Columns = new List<TableEditorColumnModel>();
         }
 
+        public string TableName { get; set; }
         public Type EntityType { get; set; }
         public string PrimaryKeyName { get; set; }
         public IEnumerable<object> Entities { get; set; }
         public object CurrentEntity { get; set; }
         public List<TableEditorColumnModel> Columns { get; }
 
-        internal void AddColumn(string propertyName)
+        internal void AddColumn(string propertyName, string name)
         {
-            Columns.Add(new TableEditorColumnModel(propertyName));
+            Columns.Add(new TableEditorColumnModel(propertyName, name));
         }
 
-        internal void AddColumn(string propertyName, ControlType controlType, IDictionary<string, string> validationAttributes, SelectList selectList)
+        internal void AddColumn(string propertyName, string name, ControlType controlType, IDictionary<string, string> validationAttributes, SelectList selectList)
         {
-            Columns.Add(new TableEditorColumnModel(propertyName, controlType, validationAttributes, selectList));
+            Columns.Add(new TableEditorColumnModel(propertyName, name, controlType, validationAttributes, selectList));
         }
 
-        public IDictionary<string, IEnumerable<TableEditorCellModel>> GetRowsForDisplay()
+        public IEnumerable<TableEditorRowModel> GetRowsForDisplay()
         {
-            var rows = new Dictionary<string, IEnumerable<TableEditorCellModel>>();
-
-            foreach (var item in Entities)
-            {
-                var id = GetCurrentEntityValue(item, PrimaryKeyName).ToString();
-
-                var rowCells = GetCellsForDisplay(item);
-
-                rows.Add(id.ToString(), rowCells);
-            }
+            var rows = Entities.Select(r => new TableEditorRowModel(
+                  GetCurrentEntityValue(r, PrimaryKeyName).ToString(),
+                  GetCellsForDisplay(r)));
 
             return rows;
         }
 
-        public IDictionary<string, IEnumerable<TableEditorCellModel>> GetRows()
+        public IEnumerable<TableEditorRowModel> GetRows()
         {
-            var rows = new Dictionary<string, IEnumerable<TableEditorCellModel>>();
-
-            foreach (var item in Entities)
-            {
-                var id = GetCurrentEntityValue(item, PrimaryKeyName).ToString();
-
-                var rowCells = GetCells(item);
-
-                rows.Add(id.ToString(), rowCells);
-            }
+            var rows = Entities.Select(r => new TableEditorRowModel(
+                  GetCurrentEntityValue(r, PrimaryKeyName).ToString(),
+                  GetCells(r)));
 
             return rows;
         }
@@ -77,7 +66,11 @@ namespace Application.Models.TableEditor
 
         public IEnumerable<TableEditorCellModel> GetNewRow()
         {
-            var entity = GetCellsForNewRow();
+            return GetNewRow(null);
+        }
+        public IEnumerable<TableEditorCellModel> GetNewRow(IDictionary<string, string> parameters)
+        {
+            var entity = GetCellsForNewRow(parameters);
 
             return entity;
         }
@@ -107,11 +100,11 @@ namespace Application.Models.TableEditor
             return fields;
         }
 
-        private IEnumerable<TableEditorCellModel> GetCellsForNewRow()
+        private IEnumerable<TableEditorCellModel> GetCellsForNewRow(IDictionary<string, string> parameters)
         {
             var fields = Columns.Select(field => new TableEditorCellModel(
                     field.PropertyName,
-                    null,
+                    parameters.ContainsKey(field.PropertyName) ? parameters[field.PropertyName] : null,
                     field.IsEditable,
                     field.ControlType,
                     field.ValidationAttributes,
@@ -127,6 +120,20 @@ namespace Application.Models.TableEditor
                 return null;
             return EntityType.GetProperty(propertyName).GetValue(entity, null);
         }
+    }
+
+    public class TableEditorRowModel
+    {
+        public TableEditorRowModel(
+            string id,
+            IEnumerable<TableEditorCellModel> cells)
+        {
+            Id = id;
+            Cells = cells;
+        }
+
+        public string Id { get; set; }
+        public IEnumerable<TableEditorCellModel> Cells { get; set; }
     }
 
     public class TableEditorBaseFieldProperties
@@ -151,20 +158,22 @@ namespace Application.Models.TableEditor
     public class TableEditorColumnModel : TableEditorBaseFieldProperties
     {
         internal TableEditorColumnModel(
-            string propertyName)
+            string propertyName,
+            string name)
         {
             PropertyName = propertyName;
-            Name = PropertyName;
+            Name = name ?? PropertyName;
             IsEditable = false;
         }
 
         internal TableEditorColumnModel(
             string propertyName,
+            string name,
             ControlType controlType,
             IDictionary<string, string> validationAttributes,
             SelectList selectList) : base(propertyName, controlType, validationAttributes)
         {
-            Name = PropertyName;
+            Name = name ?? PropertyName;
             IsEditable = true;
             SelectList = selectList;
         }

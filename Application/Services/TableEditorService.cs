@@ -10,21 +10,21 @@ namespace Application.Services
 {
     public class TableEditorService : ITableEditorService
     {
-        public void AddColumn(TableEditorModel table, string propertyName)
+        public void AddColumn(TableEditorModel table, string propertyName, string name)
         {
-            table.AddColumn(propertyName);
+            table.AddColumn(propertyName, name);
         }
 
-        public void AddColumn(TableEditorModel table, string propertyName, ControlType controlType, SelectList selectListItems)
+        public void AddColumn(TableEditorModel table, string propertyName, string name, ControlType controlType, SelectList selectListItems)
         {
             var validationAttributes = GetValidationAttributes(table.EntityType, propertyName);
 
-            table.AddColumn(propertyName, controlType, validationAttributes, selectListItems);
+            table.AddColumn(propertyName, name, controlType, validationAttributes, selectListItems);
         }
 
-        public TableEditorModel GetTable(Type entityType, string primaryKeyName, IEnumerable<object> entities, object entity)
+        public TableEditorModel GetTable(string tableName, Type entityType, string primaryKeyName, IEnumerable<object> entities, object entity)
         {
-            return new TableEditorModel(entityType, primaryKeyName, entities, entity);
+            return new TableEditorModel(tableName, entityType, primaryKeyName, entities, entity);
         }
 
         public IDictionary<string, string> GetValidationAttributes(Type entityType, string propertyName)

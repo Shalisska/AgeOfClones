@@ -4,7 +4,6 @@ using Application.Management.Interfaces;
 using Application.Management.Models;
 using Application.Models.TableEditor;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -127,10 +126,10 @@ namespace AgeOfClones.Areas.Management.Controllers
         {
             var entityType = typeof(StockManagementModel);
 
-            var tableModel = new TableEditorModel(entityType, "Id", stocks, stock);
+            var tableModel = new TableEditorModel("Stocks", entityType, "Id", stocks, stock);
 
-            _tableEditorService.AddColumn(tableModel, "Id");
-            _tableEditorService.AddColumn(tableModel, "Name", ControlType.Input, null);
+            _tableEditorService.AddColumn(tableModel, "Id", null);
+            _tableEditorService.AddColumn(tableModel, "Name", null, ControlType.Input, null);
 
             return tableModel;
         }

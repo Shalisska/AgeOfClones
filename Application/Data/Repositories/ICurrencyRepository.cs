@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application.Management.Models;
+﻿using Application.Management.Models;
 
 namespace Application.Data.Repositories
 {
-    public interface ICurrencyRepository : IRepositorySimple<CurrencyModel>
+    public interface ICurrencyRepository : IRepositorySimple<CurrencyManagementModel>
     {
+        void CreateExchangeRate(int currentCurrencyId, int currencyId, decimal buy, decimal sell);
+        void UpdateExchangeRate(int currentCurrencyId, int currencyId, decimal buy, decimal sell);
+        void DeleteExchangeRate(int currentCurrencyId, int currencyId);
     }
 }

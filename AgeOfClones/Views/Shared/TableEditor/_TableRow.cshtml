@@ -6,17 +6,23 @@
     var rows = Model.Table.GetRowsForDisplay();
     var editAction = Model.EditActionName;
     var deleteAction = Model.DeleteActionName;
+
+    var editRouteValues = Model.EditRouteValues ?? new Dictionary<string, string>();
+    var deleteRouteValues =Model.DeleteRouteValues ?? new Dictionary<string, string>();
 }
 
 @foreach (var item in rows)
-{
+    {
+        editRouteValues["id"] = item.Id;
+        deleteRouteValues["id"] = item.Id;
+
 <tr>
     <td style="width:60px;">
-        @Html.ActionLink("", editAction, new { id = Int32.Parse(item.Key) }, new { @class = "viewDialog glyphicon glyphicon-pencil", data_dialog_title = "Редактирование модели", title = "Изменить", style="margin-right:10px;" })
-        @Html.ActionLink("", deleteAction, new { id = Int32.Parse(item.Key) }, new { @class = "viewDialog glyphicon glyphicon-remove", data_dialog_title = "Удаление модели", title = "Удалить" })
+        <a asp-action="@editAction" class="viewDialog glyphicon glyphicon-pencil" data-dialog-title="Редактирование модели" title="Изменить" style="margin-right:10px;" asp-all-route-data="@editRouteValues"></a>
+        <a asp-action="@deleteAction" class="viewDialog glyphicon glyphicon-remove" data-dialog-title="Удаление модели" title="Удалить" asp-all-route-data="@deleteRouteValues"></a>
     </td>
 
-    @foreach (var cell in item.Value)
+    @foreach (var cell in item.Cells)
     {
     <td>
         @if (cell.SelectList != null)

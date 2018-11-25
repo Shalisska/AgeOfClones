@@ -106,20 +106,22 @@
     <Compile Include="Entities\Account.cs" />
     <Compile Include="Entities\Clone.cs" />
     <Compile Include="Entities\Currency.cs" />
+    <Compile Include="Entities\CurrencyExchangeRate.cs" />
     <Compile Include="Entities\Profile.cs" />
     <Compile Include="Entities\Resource.cs" />
     <Compile Include="Entities\Stock.cs" />
-    <Compile Include="Migrations\20181111181040_Account_table.cs" />
-    <Compile Include="Migrations\20181111181040_Account_table.designer.cs">
-      <DependentUpon>20181111181040_Account_table.cs</DependentUpon>
+    <Compile Include="Migrations\20181121215146_DBFromClones.cs" />
+    <Compile Include="Migrations\20181121215146_DBFromClones.designer.cs">
+      <DependentUpon>20181121215146_DBFromClones.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\20181113163458_AddTablesFromClones.cs" />
-    <Compile Include="Migrations\20181113163458_AddTablesFromClones.designer.cs">
-      <DependentUpon>20181113163458_AddTablesFromClones.cs</DependentUpon>
+    <Compile Include="Migrations\20181124232905_ExchangeRate-Buy-Sell.cs" />
+    <Compile Include="Migrations\20181124232905_ExchangeRate-Buy-Sell.designer.cs">
+      <DependentUpon>20181124232905_ExchangeRate-Buy-Sell.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\ClonesContextEFModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AccountRepository.cs" />
+    <Compile Include="Repositories\CurrencyRepository.cs" />
     <Compile Include="Repositories\ProfileRepository.cs" />
     <Compile Include="Repositories\StockRepository.cs" />
   </ItemGroup>

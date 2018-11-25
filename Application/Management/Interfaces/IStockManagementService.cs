@@ -12,5 +12,7 @@ namespace Application.Management.Interfaces
         void UpdateStock(StockManagementModel stock);
 
         void DeleteStock(int id);
+
+        void Dispose();
     }
 }

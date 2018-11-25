@@ -11,8 +11,8 @@ using System;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ClonesContextEF))]
-    [Migration("20181113163458_AddTablesFromClones")]
-    partial class AddTablesFromClones
+    [Migration("20181121215146_DBFromClones")]
+    partial class DBFromClones
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -61,13 +61,10 @@ namespace Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Infrastructure.Data.Entities.Currency", b =>
                 {
-                    b.Property<int>("Id");
-
-                    b.Property<decimal>("BuyPrice");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name");
-
-                    b.Property<decimal>("SellPrice");
 
                     b.Property<int>("StockId");
 
@@ -76,6 +73,19 @@ namespace Infrastructure.Data.Migrations
                     b.HasIndex("StockId");
 
                     b.ToTable("Currencies");
+                });
+
+            modelBuilder.Entity("Infrastructure.Data.Entities.CurrencyExchangeRate", b =>
+                {
+                    b.Property<int>("CurrencyId");
+
+                    b.Property<int>("CurrencyPairId");
+
+                    b.Property<decimal>("Price");
+
+                    b.HasKey("CurrencyId", "CurrencyPairId");
+
+                    b.ToTable("CurrencyExchanges");
                 });
 
             modelBuilder.Entity("Infrastructure.Data.Entities.Profile", b =>
@@ -145,6 +155,14 @@ namespace Infrastructure.Data.Migrations
                     b.HasOne("Infrastructure.Data.Entities.Stock", "Stock")
                         .WithMany()
                         .HasForeignKey("StockId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Infrastructure.Data.Entities.CurrencyExchangeRate", b =>
+                {
+                    b.HasOne("Infrastructure.Data.Entities.Currency", "Currency")
+                        .WithMany("ExchangeRates")
+                        .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

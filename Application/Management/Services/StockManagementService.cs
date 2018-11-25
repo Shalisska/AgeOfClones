@@ -38,5 +38,10 @@ namespace Application.Management.Services
         {
             _stockRepository.Update(stock);
         }
+
+        public void Dispose()
+        {
+            _stockRepository.Dispose();
+        }
     }
 }
