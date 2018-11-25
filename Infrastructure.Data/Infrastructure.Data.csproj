@@ -135,6 +135,10 @@
     <Compile Include="Migrations\20181125210221_SocialStatus.designer.cs">
       <DependentUpon>20181125210221_SocialStatus.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20181125221104_socialStatusDecimalPrice.cs" />
+    <Compile Include="Migrations\20181125221104_socialStatusDecimalPrice.designer.cs">
+      <DependentUpon>20181125221104_socialStatusDecimalPrice.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\ClonesContextEFModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AccountRepository.cs" />

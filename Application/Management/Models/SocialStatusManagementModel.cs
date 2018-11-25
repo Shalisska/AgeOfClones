@@ -2,6 +2,8 @@
 {
     public class SocialStatusManagementModel
     {
+        private decimal _priceForAllLicenses;
+
         public SocialStatusManagementModel() { }
         public SocialStatusManagementModel(
             int id,
@@ -12,9 +14,9 @@
             int benefitTimeDays,
             decimal referralPaymentsClonero,
             int licenseCount,
-            int licensePrice,
+            decimal licensePrice,
             int timeToGetLicenceHours,
-            int priceForAllLicenses,
+            decimal priceForAllLicenses,
             bool haveKingdom,
             int universityLevel,
             bool havePalace,
@@ -79,7 +81,7 @@
         /// <summary>
         /// Цена лицензии
         /// </summary>
-        public int LicensePrice { get; set; }
+        public decimal LicensePrice { get; set; }
         /// <summary>
         /// Время на получение лицензии
         /// </summary>
@@ -88,7 +90,11 @@
         /// <summary>
         /// Общая стоимость получения лицензий
         /// </summary>
-        public int PriceForAllLicenses { get; set; }
+        public decimal PriceForAllLicenses
+        {
+            get => _priceForAllLicenses;
+            set => _priceForAllLicenses = LicenseCount * LicensePrice;
+        }
 
         /// <summary>
         /// Наличие княжества

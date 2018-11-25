@@ -34,7 +34,7 @@
                 }
                 break;
             case ControlType.Checkbox:
-                <input type="checkbox" id="@Model.PropertyName" name="@Model.PropertyName"/>
+                <input type="checkbox" id="@Model.PropertyName" name="@Model.PropertyName" value="true" @(Model.Value.ToLower() == "true" ? "checked" : "")/>
                 break;
             default:
                 <input class="form-control" type="text" id="@Model.PropertyName" name="@Model.PropertyName" value="@Model.Value" @Html.Raw(GetValidationAttributes(Model.ValidationAttributes)) />

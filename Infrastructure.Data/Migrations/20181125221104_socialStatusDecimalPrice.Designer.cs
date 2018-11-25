@@ -11,9 +11,10 @@ using System;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ClonesContextEF))]
-    partial class ClonesContextEFModelSnapshot : ModelSnapshot
+    [Migration("20181125221104_socialStatusDecimalPrice")]
+    partial class socialStatusDecimalPrice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

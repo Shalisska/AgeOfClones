@@ -8,7 +8,7 @@ namespace Infrastructure.Data.Entities
 {
     public class SocialStatus
     {
-        private int _priceForAllLicenses;
+        private decimal _priceForAllLicenses;
 
         public SocialStatus() { }
         public SocialStatus(
@@ -20,8 +20,8 @@ namespace Infrastructure.Data.Entities
             int benefitTimeDays,
             decimal referralPaymentsClonero,
             int licenseCount,
-            int licensePrice,
-            int timeToGetLicence,
+            decimal licensePrice,
+            int timeToGetLicenceHours,
             bool haveKingdom,
             int universityLevel,
             bool havePalace,
@@ -40,7 +40,7 @@ namespace Infrastructure.Data.Entities
             ReferralPaymentsClonero = referralPaymentsClonero;
             LicenseCount = licenseCount;
             LicensePrice = licensePrice;
-            TimeToGetLicence = timeToGetLicence;
+            TimeToGetLicenceHours = timeToGetLicenceHours;
             HaveKingdom = haveKingdom;
             UniversityLevel = universityLevel;
             HavePalace = havePalace;
@@ -85,16 +85,16 @@ namespace Infrastructure.Data.Entities
         /// <summary>
         /// Цена лицензии
         /// </summary>
-        public int LicensePrice { get; set; }
+        public decimal LicensePrice { get; set; }
         /// <summary>
         /// Время на получение лицензии
         /// </summary>
-        public int TimeToGetLicence { get; set; }
+        public int TimeToGetLicenceHours { get; set; }
 
         /// <summary>
         /// Общая стоимость получения лицензий
         /// </summary>
-        public int PriceForAllLicenses
+        public decimal PriceForAllLicenses
         {
             get => _priceForAllLicenses;
             set => _priceForAllLicenses = LicenseCount * LicensePrice;
