@@ -104,7 +104,7 @@ namespace Application.Models.TableEditor
         {
             var fields = Columns.Select(field => new TableEditorCellModel(
                     field.PropertyName,
-                    parameters.ContainsKey(field.PropertyName) ? parameters[field.PropertyName] : null,
+                    parameters != null && parameters.ContainsKey(field.PropertyName) ? parameters[field.PropertyName] : null,
                     field.IsEditable,
                     field.ControlType,
                     field.ValidationAttributes,
