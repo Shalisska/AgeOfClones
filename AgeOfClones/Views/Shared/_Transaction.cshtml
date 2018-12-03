@@ -1,0 +1,59 @@
+﻿@using AgeOfClones.Areas.Management.Models
+
+@model TransactionViewModel
+
+<form asp-action="BuyCurrency" id="transaction-form">
+    <table class="table">
+        <tr>
+            <th>
+                Currency
+            </th>
+            <th>
+                Value
+            </th>
+            <th>
+                Price per one
+            </th>
+            <th>
+                Corresponding Currency
+            </th>
+            <th>
+                Total
+            </th>
+        </tr>
+        <tr>
+            <td style="vertical-align:middle;">
+                @Model.ItemName
+                <input class="form-control" type="hidden" id="currencyId" name="currencyId" value="@Model.ItemId" />
+            </td>
+            <td>
+                <input class="form-control" type="text" id="value" name="value" value="@Model.Value" data-val-number="true" />
+            </td>
+            <td>
+                @Model.PricePerOne
+            </td>
+            <td>
+                <select class="form-control" id="correspondingId" name="correspondingId">
+                    @foreach (SelectListItem item in Model.CorrespondingItem)
+                    {
+                        if (item.Selected)
+                        {
+                            <option selected="selected" value="@item.Value">@item.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    }
+                </select>
+            </td>
+            <td>@Model.TotalPrice</td>
+        </tr>
+    </table>
+
+    <div class="form-group">
+        <a id="update-transaction" class="btn-link" data-update="@Model.UpdateAction">Update</a>
+        <input type="submit" value="Buy" class="btn btn-default @(Model.CanDoOperation?"":"hide")" />
+    </div>
+</form>
+

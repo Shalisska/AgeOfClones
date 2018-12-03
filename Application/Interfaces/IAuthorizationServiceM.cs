@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Application.Interfaces
 {
-    public interface IAuthorizationService
+    public interface IAuthorizationServiceM
     {
         IEnumerable<AccountManagementModel> GetAccounts();
         IEnumerable<ProfileManagementModel> GetProfiles();

@@ -1,8 +1,14 @@
-﻿@model IEnumerable<Application.Management.Models.ProfileManagementModel>
+﻿@model IEnumerable<Application.Models.AccountModel.ProfileModel>
 
 @{ 
     var profileModel = Model.FirstOrDefault();
     var accountModel = profileModel.Accounts.FirstOrDefault();
+    var currencies = new Dictionary<int, string>
+    {
+        { 1, "Rubles" },
+        { 2, "Clonero" },
+        { 3, "Gold" }
+    };
 }
 
 <p>@ViewData["User"]</p>
@@ -11,6 +17,9 @@
         <tr>
             <th>
                 @Html.DisplayNameFor(model => accountModel.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => accountModel.Currencies)
             </th>
         </tr>
     </thead>
@@ -22,15 +31,33 @@
             </tr>
             @foreach (var item in profile.Accounts)
             {
-                <tr>
-                    <td>
-                        <a asp-action="Login" asp-controller="Authorization" asp-route-id="@item.Id">
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </a>
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    <a asp-action="Login" asp-controller="Authorization" asp-route-id="@item.Id">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </a>
+                </td>
+                <td>
+                    <ul>
+                        @foreach (var currency in currencies)
+                        {
+                            var curr = item.Currencies.FirstOrDefault(c => c.CurrencyId == currency.Key);
+                        <li>
+                            @if (curr != null)
+                            {
+                                <span>@curr.Currency.Name: @curr.Value</span>
+                            }
+                            else
+                            {
+                                <span>@currency.Value: 0</span>
+                            }
+                            <a asp-action="BuyCurrency" class="viewDialog" data-dialog-title="Buy" title="Buy" asp-route-currencyId="@currency.Key">Buy</a>
+                        </li>
+                        }
+                    </ul>
+                </td>
+            </tr>
             }
-
         }
 
     </tbody>

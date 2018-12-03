@@ -103,7 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EF\ClonesContextEF.cs" />
-    <Compile Include="Entities\Account.cs" />
+    <Compile Include="Entities\AccountEF.cs" />
     <Compile Include="Entities\Clone.cs" />
     <Compile Include="Entities\Currency.cs" />
     <Compile Include="Entities\CurrencyExchangeRate.cs" />
@@ -111,6 +111,7 @@
     <Compile Include="Entities\Resource.cs" />
     <Compile Include="Entities\SocialStatus.cs" />
     <Compile Include="Entities\Stock.cs" />
+    <Compile Include="Entities\WalletEF.cs" />
     <Compile Include="Migrations\20181121215146_DBFromClones.cs" />
     <Compile Include="Migrations\20181121215146_DBFromClones.designer.cs">
       <DependentUpon>20181121215146_DBFromClones.cs</DependentUpon>
@@ -139,14 +140,21 @@
     <Compile Include="Migrations\20181125221104_socialStatusDecimalPrice.designer.cs">
       <DependentUpon>20181125221104_socialStatusDecimalPrice.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20181201205346_Wallet.cs" />
+    <Compile Include="Migrations\20181201205346_Wallet.designer.cs">
+      <DependentUpon>20181201205346_Wallet.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\ClonesContextEFModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\AccountManagementRepository.cs" />
     <Compile Include="Repositories\AccountRepository.cs" />
     <Compile Include="Repositories\CurrencyRepository.cs" />
+    <Compile Include="Repositories\ProfileManagementRepository.cs" />
     <Compile Include="Repositories\ProfileRepository.cs" />
     <Compile Include="Repositories\ResourceRepository.cs" />
     <Compile Include="Repositories\SocialStatusRepository.cs" />
     <Compile Include="Repositories\StockRepository.cs" />
+    <Compile Include="UnitsOfWork\AccountUOW.cs" />
     <Compile Include="UnitsOfWork\ResourceUOW.cs" />
     <Compile Include="UnitsOfWork\SocialStatusUOW.cs" />
     <Compile Include="XML\Entities\ResourceXML.cs" />
@@ -160,6 +168,10 @@
     <ProjectReference Include="..\Application\Application.csproj">
       <Project>{fef9de13-eec8-4b80-b33b-6fa3ed6452a2}</Project>
       <Name>Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Domain.GameModule\Domain.GameModule.csproj">
+      <Project>{C9F8FD97-E6BA-4A55-A62F-72D07EB4F9EC}</Project>
+      <Name>Domain.GameModule</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

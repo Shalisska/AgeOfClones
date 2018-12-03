@@ -7,7 +7,7 @@ namespace Infrastructure.Data.Entities
     {
         public Profile() { }
 
-        public Profile(int id, string name, ICollection<Account> accounts)
+        public Profile(int id, string name, ICollection<AccountEF> accounts)
         {
             Id = id;
             Name = name;
@@ -18,6 +18,6 @@ namespace Infrastructure.Data.Entities
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public ICollection<Account> Accounts { get; set; }
+        public ICollection<AccountEF> Accounts { get; set; }
     }
 }

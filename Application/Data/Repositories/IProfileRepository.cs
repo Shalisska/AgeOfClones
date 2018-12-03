@@ -1,9 +1,10 @@
-﻿using Application.Management.Models;
-using System;
+﻿using Application.Models.AccountModel;
+using System.Collections.Generic;
 
 namespace Application.Data.Repositories
 {
-    public interface IProfileRepository : IRepositorySimple<ProfileManagementModel>, IDisposable
+    public interface IProfileRepository
     {
+        IEnumerable<ProfileModel> GetAll();
     }
 }

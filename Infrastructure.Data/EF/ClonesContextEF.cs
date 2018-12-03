@@ -12,16 +12,18 @@ namespace Infrastructure.Data.EF
         }
 
         public DbSet<Profile> Profiles { get; set; }
-        public DbSet<Account> Accounts { get; set; }
+        public DbSet<AccountEF> Accounts { get; set; }
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<Resource> Resources { get; set; }
         public DbSet<Currency> Currencies { get; set; }
+        public DbSet<WalletEF> Wallets { get; set; }
         public DbSet<CurrencyExchangeRate> CurrencyExchanges { get; set; }
         public DbSet<SocialStatus> SocialStatuses { get; set; }
         public DbSet<Clone> Clones { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<WalletEF>().HasKey(u => new { u.AccountId, u.CurrencyId });
             modelBuilder.Entity<CurrencyExchangeRate>().HasKey(u => new { u.CurrencyId, u.CurrencyPairId });
 
             foreach (var property in modelBuilder.Model.GetEntityTypes()

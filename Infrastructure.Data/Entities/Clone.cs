@@ -20,6 +20,6 @@ namespace Infrastructure.Data.Entities
 
         public int AccountId { get; set; }
 
-        public Account Account { get; set; }
+        public AccountEF Account { get; set; }
     }
 }

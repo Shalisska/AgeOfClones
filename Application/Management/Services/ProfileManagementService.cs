@@ -7,12 +7,12 @@ namespace Application.Management.Services
 {
     public class ProfileManagementService : IProfileManagementService
     {
-        private IProfileRepository _profileRepository;
-        private IAccountRepository _accountRepository;
+        private IProfileManagementRepository _profileRepository;
+        private IAccountManagementRepository _accountRepository;
 
         public ProfileManagementService(
-            IProfileRepository profileRepository,
-            IAccountRepository accountRepository)
+            IProfileManagementRepository profileRepository,
+            IAccountManagementRepository accountRepository)
         {
             _profileRepository = profileRepository;
             _accountRepository = accountRepository;

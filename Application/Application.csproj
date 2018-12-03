@@ -44,16 +44,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Repositories\IAccountManagementRepository.cs" />
     <Compile Include="Data\Repositories\IAccountRepository.cs" />
     <Compile Include="Data\Repositories\ICurrencyRepository.cs" />
+    <Compile Include="Data\Repositories\IProfileManagementRepository.cs" />
     <Compile Include="Data\Repositories\IProfileRepository.cs" />
     <Compile Include="Data\Repositories\IRepositorySimple.cs" />
     <Compile Include="Data\Repositories\IResourceRepository.cs" />
     <Compile Include="Data\Repositories\ISocialStatusRepository.cs" />
     <Compile Include="Data\Repositories\IStockRepository.cs" />
+    <Compile Include="Data\UnitsOfWork\IAccountUOW.cs" />
     <Compile Include="Data\UnitsOfWork\IResourceUOW.cs" />
     <Compile Include="Data\UnitsOfWork\ISocialStatusUOW.cs" />
-    <Compile Include="Interfaces\IAuthorizationService.cs" />
+    <Compile Include="Interfaces\IAccountService.cs" />
+    <Compile Include="Interfaces\IAuthorizationServiceM.cs" />
     <Compile Include="Interfaces\ITableEditorService.cs" />
     <Compile Include="Management\Interfaces\ICurrencyManagementService.cs" />
     <Compile Include="Management\Interfaces\IProfileManagementService.cs" />
@@ -73,9 +77,15 @@
     <Compile Include="Management\Services\ResourceManagementService.cs" />
     <Compile Include="Management\Services\SocialStatusManagementService.cs" />
     <Compile Include="Management\Services\StockManagementService.cs" />
+    <Compile Include="Models\AccountModel\AccountModel.cs" />
+    <Compile Include="Models\AccountModel\ProfileModel.cs" />
+    <Compile Include="Models\AccountModel\WalletModel.cs" />
+    <Compile Include="Models\CurrencyExchangeRateModel.cs" />
+    <Compile Include="Models\CurrencyModel.cs" />
     <Compile Include="Models\TableEditor\TableEditorModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\AuthorizationService.cs" />
+    <Compile Include="Services\AccountService.cs" />
+    <Compile Include="Services\AuthorizationServiceM.cs" />
     <Compile Include="Services\TableEditorService.cs" />
   </ItemGroup>
   <ItemGroup>

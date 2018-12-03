@@ -13,11 +13,11 @@ namespace AgeOfClones.Controllers
     public class AuthorizationController : Controller
     {
         IProfileManagementService _profileManagementService;
-        IAuthorizationService _authorizationService;
+        IAuthorizationServiceM _authorizationService;
 
         public AuthorizationController(
             IProfileManagementService profileManagementService,
-            IAuthorizationService authorizationService)
+            IAuthorizationServiceM authorizationService)
         {
             _profileManagementService = profileManagementService;
             _authorizationService = authorizationService;
@@ -38,7 +38,7 @@ namespace AgeOfClones.Controllers
                 return RedirectToAction("Index", "Home");
 
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            await Authenticate(account.Name);
+            await Authenticate(account.Name, id);
             return RedirectToAction("Index", "Home");
         }
 
@@ -48,19 +48,20 @@ namespace AgeOfClones.Controllers
         {
             if (ModelState.IsValid)
             {
-                await Authenticate(model.Name); // аутентификация
+                await Authenticate(model.Name, model.Id); // аутентификация
 
                 return RedirectToAction("Index", "Home");
             }
             return View(model);
         }
 
-        private async Task Authenticate(string userName)
+        private async Task Authenticate(string userName, int userId)
         {
             // создаем один claim
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, userName),
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString())
             };
             // создаем объект ClaimsIdentity
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);

@@ -36,21 +36,24 @@ namespace AgeOfClones
             services.AddTransient<ICurrencyManagementService, CurrencyManagementService>();
             services.AddTransient<IResourceManagementService, ResourceManagementService>();
             services.AddTransient<ISocialStatusManagementService, SocialStatusManagementService>();
+            services.AddTransient<IAccountService, AccountService>();
 
 
-            services.AddTransient<IAuthorizationService, AuthorizationService>();
+            services.AddTransient<IAuthorizationServiceM, AuthorizationServiceM>();
 
             services.AddTransient<ITableEditorService, TableEditorService>();
 
-            services.AddTransient<IProfileRepository, ProfileRepository>();
-            services.AddTransient<IAccountRepository, AccountRepository>();
+            services.AddTransient<IProfileManagementRepository, ProfileManagementRepository>();
+            services.AddTransient<IAccountManagementRepository, AccountManagementRepository>();
             services.AddTransient<IStockRepository, StockRepository>();
             services.AddTransient<ICurrencyRepository, CurrencyRepository>();
             services.AddTransient<IResourceRepository, ResourceRepository>();
             services.AddTransient<ISocialStatusRepository, SocialStatusRepository>();
+            services.AddTransient<IAccountRepository, AccountRepository>();
 
             services.AddTransient<IResourceUOW, ResourceUOW>();
             services.AddTransient<ISocialStatusUOW, SocialStatusUOW>();
+            services.AddTransient<IAccountUOW, AccountUOW>();
 
             // установка конфигурации подключения
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

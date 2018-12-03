@@ -6,14 +6,14 @@ using System.Linq;
 
 namespace Application.Services
 {
-    public class AuthorizationService : IAuthorizationService
+    public class AuthorizationServiceM : IAuthorizationServiceM
     {
-        private IProfileRepository _profileRepository;
-        private IAccountRepository _accountRepository;
+        private IProfileManagementRepository _profileRepository;
+        private IAccountManagementRepository _accountRepository;
 
-        public AuthorizationService(
-            IProfileRepository profileRepository,
-            IAccountRepository accountRepository)
+        public AuthorizationServiceM(
+            IProfileManagementRepository profileRepository,
+            IAccountManagementRepository accountRepository)
         {
             _profileRepository = profileRepository;
             _accountRepository = accountRepository;
