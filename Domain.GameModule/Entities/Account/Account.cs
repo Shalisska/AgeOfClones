@@ -14,14 +14,16 @@ namespace Domain.GameModule.Entities.Account
             return Currencies?.FirstOrDefault(c => c.CurrencyId == id);
         }
 
-        public virtual void BuyCurrency(Wallet currency, Wallet correspondingCurrency, decimal value)
+        public virtual void BuyCurrency(Wallet currency, Wallet correspondingCurrency, decimal currencyValue, decimal correspondingCurrencyValue)
         {
-            currency.Buy(value, correspondingCurrency);
+            currency.Increase(currencyValue);
+            correspondingCurrency.Decrease(correspondingCurrencyValue);
         }
 
-        public virtual void SellCurrency(Wallet currency, Wallet correspondingCurrency, decimal value)
+        public virtual void SellCurrency(Wallet currency, Wallet correspondingCurrency, decimal currencyValue, decimal correspondingCurrencyValue)
         {
-            currency.Sell(value, correspondingCurrency);
+            currency.Decrease(currencyValue);
+            correspondingCurrency.Increase(correspondingCurrencyValue);
         }
     }
 }

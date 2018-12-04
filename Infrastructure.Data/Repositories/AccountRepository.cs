@@ -23,12 +23,13 @@ namespace Infrastructure.Data.Repositories
         public IEnumerable<AccountModel> GetAll()
         {
             var accounts = _db.Accounts;
+            var currencies = GetCurrencies();
 
             if (accounts != null && accounts.Count() > 0)
                 return accounts.Select(a => new AccountModel(
                     a.Id,
                     a.Name,
-                    a.Wallets.Select(w => GetWalletModel(w)).ToList(),
+                    a.Wallets.Select(w => GetWalletModel(w, currencies)).ToList(),
                     a.ProfileId,
                     new ProfileModel(a.ProfileId, a.Profile.Name))).ToList();
 
@@ -38,30 +39,24 @@ namespace Infrastructure.Data.Repositories
         public AccountModel Get(int id)
         {
             var account = _db.Accounts.FirstOrDefault(a => a.Id == id);
+            var currencies = GetCurrencies();
 
             return new AccountModel(
                     account.Id,
                     account.Name,
-                    account.Wallets?.Select(w => GetWalletModel(w)).ToList(),
+                    account.Wallets?.Select(w => GetWalletModel(w, currencies)).ToList(),
                     account.ProfileId,
                     null);
         }
 
-        private WalletModel GetWalletModel(WalletEF item)
+        private WalletModel GetWalletModel(WalletEF item, IEnumerable<CurrencyModel> currencies)
         {
+            var currency = currencies.FirstOrDefault(c => c.Id == item.CurrencyId);
             return new WalletModel(
                 item.Value,
                 item.AccountId,
                 item.CurrencyId,
-                new CurrencyModel(
-                    item.Currency.Id,
-                    item.Currency.Name,
-                    item.Currency.ExchangeRates.Select(r => new CurrencyExchangeRateModel(
-                        r.CurrencyId,
-                        r.CurrencyPairId,
-                        r.Buy,
-                        r.Sell)).ToList(),
-                    item.Currency.StockId));
+                currency);
         }
 
         private WalletEF GetWallet(WalletModel item)
@@ -76,11 +71,17 @@ namespace Infrastructure.Data.Repositories
         {
             foreach(var item in items)
             {
-                var currency = GetWallet(item);
-                if (_db.Wallets.FirstOrDefault(w => w.AccountId == currency.AccountId && w.CurrencyId == currency.CurrencyId) != null)
+                var currency = _db.Wallets.FirstOrDefault(w => w.AccountId == item.AccountId && w.CurrencyId == item.CurrencyId);
+                if (currency != null)
+                {
+                    currency.Value = item.Value;
                     _db.Entry(currency).State = EntityState.Modified;
+                }
                 else
+                {
+                    currency = GetWallet(item);
                     _db.Wallets.Add(currency);
+                }
             }
         }
 

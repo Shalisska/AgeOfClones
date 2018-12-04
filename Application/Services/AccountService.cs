@@ -42,22 +42,22 @@ namespace Application.Services
 
         public void BuyCurrency(AccountModel account, int currencyId, int correspondingCurrencyId, decimal value)
         {
-            var currency = GetCurrency(account, currencyId);
-            var correspondingCurrency = GetCurrency(account, correspondingCurrencyId);
+            //var currency = GetCurrency(account, currencyId);
+            //var correspondingCurrency = GetCurrency(account, correspondingCurrencyId);
 
-            account.BuyCurrency(currency, correspondingCurrency, value);
+            //account.BuyCurrency(currency, correspondingCurrency, value);
 
-            SaveCurrencyTransaction(new List<WalletModel> { currency, correspondingCurrency });
+            //SaveCurrencyTransaction(new List<WalletModel> { currency, correspondingCurrency });
         }
 
         public void SellCurrency(AccountModel account, int currencyId, int correspondingCurrencyId, decimal value)
         {
-            var currency = GetCurrency(account, currencyId);
-            var correspondingCurrency = GetCurrency(account, currencyId);
+            //var currency = GetCurrency(account, currencyId);
+            //var correspondingCurrency = GetCurrency(account, currencyId);
 
-            account.SellCurrency(currency, correspondingCurrency, value);
+            //account.SellCurrency(currency, correspondingCurrency, value);
 
-            SaveCurrencyTransaction(new List<WalletModel> { currency, correspondingCurrency });
+            //SaveCurrencyTransaction(new List<WalletModel> { currency, correspondingCurrency });
         }
 
         private WalletModel GetCurrency(AccountModel account, int currencyId)

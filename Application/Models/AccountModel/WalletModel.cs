@@ -17,5 +17,7 @@ namespace Application.Models.AccountModel
             CurrencyId = currencyId;
             Currency = currency;
         }
+
+        CurrencyModel Currency { get; set; }
     }
 }

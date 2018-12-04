@@ -43,15 +43,8 @@
                         {
                             var curr = item.Currencies.FirstOrDefault(c => c.CurrencyId == currency.Key);
                         <li>
-                            @if (curr != null)
-                            {
-                                <span>@curr.Currency.Name: @curr.Value</span>
-                            }
-                            else
-                            {
-                                <span>@currency.Value: 0</span>
-                            }
-                            <a asp-action="BuyCurrency" class="viewDialog" data-dialog-title="Buy" title="Buy" asp-route-currencyId="@currency.Key">Buy</a>
+                            <span>@currency.Value: @(curr!=null?curr.Value:0)</span>
+                            @*<a asp-action="BuyCurrency" class="viewDialog" data-dialog-title="Buy" title="Buy" asp-route-currencyId="@currency.Key">Buy</a>*@
                         </li>
                         }
                     </ul>
