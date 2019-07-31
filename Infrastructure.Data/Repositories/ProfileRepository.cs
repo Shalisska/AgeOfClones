@@ -40,14 +40,14 @@ namespace Infrastructure.Data.Repositories
 
         public void Create(ProfileManagementModel item)
         {
-            Profile profile = new Profile(item.Id, item.Name, null);
+            ProfileEF profile = new ProfileEF(item.Id, item.Name, null);
             _db.Profiles.Add(profile);
             _db.SaveChanges();
         }
 
         public void Update(ProfileManagementModel item)
         {
-            Profile profile = new Profile(item.Id, item.Name, null);
+            ProfileEF profile = new ProfileEF(item.Id, item.Name, null);
             _db.Entry(profile).State = EntityState.Modified;
             _db.SaveChanges();
         }

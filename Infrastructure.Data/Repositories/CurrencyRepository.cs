@@ -56,7 +56,7 @@ namespace Infrastructure.Data.Repositories
 
         public void Create(CurrencyManagementModel item)
         {
-            var currency = new Currency(item.Id, item.Name, item.StockId);
+            var currency = new CurrencyEF(item.Id, item.Name, item.StockId);
             _db.Currencies.Add(currency);
 
             _db.SaveChanges();
@@ -64,7 +64,7 @@ namespace Infrastructure.Data.Repositories
 
         public void Update(CurrencyManagementModel item)
         {
-            var currency = new Currency(item.Id, item.Name, item.StockId);
+            var currency = new CurrencyEF(item.Id, item.Name, item.StockId);
             _db.Entry(currency).State= EntityState.Modified;
 
             _db.SaveChanges();
@@ -82,7 +82,7 @@ namespace Infrastructure.Data.Repositories
 
         public void CreateExchangeRate(int currentCurrencyId, int currencyId, decimal buy, decimal sell)
         {
-            var exchangeRate = new CurrencyExchangeRate(currentCurrencyId, currencyId, buy, sell);
+            var exchangeRate = new CurrencyExchangeRateEF(currentCurrencyId, currencyId, buy, sell);
 
             _db.CurrencyExchanges.Add(exchangeRate);
             _db.SaveChanges();
@@ -90,7 +90,7 @@ namespace Infrastructure.Data.Repositories
 
         public void UpdateExchangeRate(int currentCurrencyId, int currencyId, decimal buy, decimal sell)
         {
-            var exchangeRate = new CurrencyExchangeRate(currentCurrencyId, currencyId, buy, sell);
+            var exchangeRate = new CurrencyExchangeRateEF(currentCurrencyId, currencyId, buy, sell);
             _db.Entry(exchangeRate).State = EntityState.Modified;
             _db.SaveChanges();
         }

@@ -1,9 +1,12 @@
-﻿namespace Infrastructure.Data.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Infrastructure.Data.Entities
 {
-    public class Resource
+    [Table("Resources")]
+    public class ResourceEF
     {
-        public Resource() { }
-        public Resource(
+        public ResourceEF() { }
+        public ResourceEF(
             int id,
             string name,
             decimal priceBase,
@@ -31,6 +34,6 @@
 
         public int StockId { get; set; }
 
-        public Stock Stock { get; set; }
+        public StockEF Stock { get; set; }
     }
 }

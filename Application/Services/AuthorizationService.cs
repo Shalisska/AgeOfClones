@@ -9,11 +9,11 @@ namespace Application.Services
     public class AuthorizationService : IAuthorizationService
     {
         private IProfileRepository _profileRepository;
-        private IAccountRepository _accountRepository;
+        private IAccountManagementRepository _accountRepository;
 
         public AuthorizationService(
             IProfileRepository profileRepository,
-            IAccountRepository accountRepository)
+            IAccountManagementRepository accountRepository)
         {
             _profileRepository = profileRepository;
             _accountRepository = accountRepository;
@@ -26,11 +26,12 @@ namespace Application.Services
 
         public IEnumerable<ProfileManagementModel> GetProfiles()
         {
-            var profiles = _profileRepository.GetAll().ToList();
+            var profiles = _profileRepository.GetAll().ToList() ?? new List<ProfileManagementModel>();
             var accounts = _accountRepository.GetAll();
 
-            foreach (var profile in profiles)
-                profile.Accounts = accounts.Where(a => a.ProfileId == profile.Id).Select(a => a);
+            if (profiles.Count > 0)
+                foreach (var profile in profiles)
+                    profile.Accounts = accounts.Where(a => a.ProfileId == profile.Id);
 
             return profiles;
         }

@@ -2,7 +2,7 @@
 
 namespace Application.Data.Repositories
 {
-    public interface IResourceRepository : IRepositorySimple<ResourceManagementModel>
+    public interface IResourceManagementRepository : IRepositorySimple<ResourceManagementModel>
     {
         //IEnumerable<IResourceAdapter> GetAllWithParameters(TableQueryParameters parameters);
 

@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Infrastructure.Data.Entities
 {
-    public class Profile
+    [Table("Profiles")]
+    public class ProfileEF
     {
-        public Profile() { }
+        public ProfileEF() { }
 
-        public Profile(int id, string name, ICollection<Account> accounts)
+        public ProfileEF(int id, string name, ICollection<AccountEF> accounts)
         {
             Id = id;
             Name = name;
@@ -18,6 +20,6 @@ namespace Infrastructure.Data.Entities
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public ICollection<Account> Accounts { get; set; }
+        public ICollection<AccountEF> Accounts { get; set; }
     }
 }

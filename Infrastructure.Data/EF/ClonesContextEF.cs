@@ -11,17 +11,17 @@ namespace Infrastructure.Data.EF
             Database.Migrate();
         }
 
-        public DbSet<Profile> Profiles { get; set; }
-        public DbSet<Account> Accounts { get; set; }
-        public DbSet<Stock> Stocks { get; set; }
-        public DbSet<Resource> Resources { get; set; }
-        public DbSet<Currency> Currencies { get; set; }
-        public DbSet<CurrencyExchangeRate> CurrencyExchanges { get; set; }
-        public DbSet<Clone> Clones { get; set; }
+        public DbSet<ProfileEF> Profiles { get; set; }
+        public DbSet<AccountEF> Accounts { get; set; }
+        public DbSet<StockEF> Stocks { get; set; }
+        public DbSet<ResourceEF> Resources { get; set; }
+        public DbSet<CurrencyEF> Currencies { get; set; }
+        public DbSet<CurrencyExchangeRateEF> CurrencyExchanges { get; set; }
+        public DbSet<CloneEF> Clones { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<CurrencyExchangeRate>().HasKey(u => new { u.CurrencyId, u.CurrencyPairId });
+            modelBuilder.Entity<CurrencyExchangeRateEF>().HasKey(u => new { u.CurrencyId, u.CurrencyPairId });
 
             foreach (var property in modelBuilder.Model.GetEntityTypes()
                 .SelectMany(t => t.GetProperties())

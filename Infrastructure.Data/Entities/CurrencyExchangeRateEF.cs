@@ -1,9 +1,12 @@
-﻿namespace Infrastructure.Data.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Infrastructure.Data.Entities
 {
-    public class CurrencyExchangeRate
+    [Table("CurrencyExchangeRates")]
+    public class CurrencyExchangeRateEF
     {
-        public CurrencyExchangeRate() { }
-        public CurrencyExchangeRate(
+        public CurrencyExchangeRateEF() { }
+        public CurrencyExchangeRateEF(
             int currencyId,
             int currencyPairId,
             decimal buy,
@@ -21,6 +24,6 @@
         public decimal Buy { get; set; }
         public decimal Sell { get; set; }
 
-        public Currency Currency { get; set; }
+        public CurrencyEF Currency { get; set; }
     }
 }

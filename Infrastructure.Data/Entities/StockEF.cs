@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Infrastructure.Data.Entities
 {
-    public class Stock
+    [Table("Stocks")]
+    public class StockEF
     {
-        public Stock() { }
+        public StockEF() { }
 
-        public Stock(
+        public StockEF(
             int id,
             string name)
         {
@@ -17,6 +19,6 @@ namespace Infrastructure.Data.Entities
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public ICollection<Resource> Resources { get; set; }
+        public ICollection<ResourceEF> Resources { get; set; }
     }
 }

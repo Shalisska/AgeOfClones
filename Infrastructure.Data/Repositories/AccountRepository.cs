@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Infrastructure.Data.Repositories
 {
-    public class AccountRepository : IAccountRepository
+    public class AccountRepository : IAccountManagementRepository
     {
         private ClonesContextEF _db;
 
@@ -40,14 +40,14 @@ namespace Infrastructure.Data.Repositories
 
         public void Create(AccountManagementModel item)
         {
-            var account = new Account(item.Id, item.Name, item.ProfileId, null);
+            var account = new AccountEF(item.Id, item.Name, item.ProfileId, null);
             _db.Accounts.Add(account);
             _db.SaveChanges();
         }
 
         public void Update(AccountManagementModel item)
         {
-            var account = new Account(item.Id, item.Name, item.ProfileId, null);
+            var account = new AccountEF(item.Id, item.Name, item.ProfileId, null);
             _db.Entry(account).State = EntityState.Modified;
             _db.SaveChanges();
         }

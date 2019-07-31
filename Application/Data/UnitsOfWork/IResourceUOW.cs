@@ -4,7 +4,7 @@ namespace Application.Data.UnitsOfWork
 {
     public interface IResourceUOW
     {
-        IResourceRepository Resources { get; }
+        IResourceManagementRepository Resources { get; }
         IStockRepository Stocks { get; }
 
         void Save();

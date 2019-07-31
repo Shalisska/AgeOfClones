@@ -2,7 +2,7 @@
 
 @{ 
     var profileModel = Model.FirstOrDefault();
-    var accountModel = profileModel.Accounts.FirstOrDefault();
+    var accountModel = profileModel?.Accounts.FirstOrDefault();
 }
 
 <p>@ViewData["User"]</p>

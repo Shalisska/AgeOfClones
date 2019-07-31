@@ -9,9 +9,12 @@
 
 @{ Html.RenderPartial("TableEditor/_Table"); }
 
-<ul>
-    @foreach (var item in items)
-    {
-        <li><a asp-area="Management" asp-controller="Currency" asp-action="IndexExchangeRates" asp-route-id="@item.Id">@item.Name</a></li>
-    }
-</ul>
+@if (items?.Count() > 0)
+{
+    <ul>
+        @foreach (var item in items)
+        {
+            <li><a asp-area="Management" asp-controller="Currency" asp-action="IndexExchangeRates" asp-route-id="@item.Id">@item.Name</a></li>
+        }
+    </ul>
+}

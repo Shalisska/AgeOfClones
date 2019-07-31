@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Data.Entities
 {
-    public class Clone
+    [Table("Clones")]
+    public class CloneEF
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -20,6 +22,6 @@ namespace Infrastructure.Data.Entities
 
         public int AccountId { get; set; }
 
-        public Account Account { get; set; }
+        public AccountEF Account { get; set; }
     }
 }

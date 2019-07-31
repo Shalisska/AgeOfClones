@@ -103,13 +103,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EF\ClonesContextEF.cs" />
-    <Compile Include="Entities\Account.cs" />
-    <Compile Include="Entities\Clone.cs" />
-    <Compile Include="Entities\Currency.cs" />
-    <Compile Include="Entities\CurrencyExchangeRate.cs" />
-    <Compile Include="Entities\Profile.cs" />
-    <Compile Include="Entities\Resource.cs" />
-    <Compile Include="Entities\Stock.cs" />
+    <Compile Include="Entities\AccountEF.cs" />
+    <Compile Include="Entities\CloneEF.cs" />
+    <Compile Include="Entities\CurrencyEF.cs" />
+    <Compile Include="Entities\CurrencyExchangeRateEF.cs" />
+    <Compile Include="Entities\ProfileEF.cs" />
+    <Compile Include="Entities\ResourceEF.cs" />
+    <Compile Include="Entities\StockEF.cs" />
     <Compile Include="Migrations\20181121215146_DBFromClones.cs" />
     <Compile Include="Migrations\20181121215146_DBFromClones.designer.cs">
       <DependentUpon>20181121215146_DBFromClones.cs</DependentUpon>
@@ -129,6 +129,10 @@
     <Compile Include="Migrations\20181125130654_AddPrescision4.cs" />
     <Compile Include="Migrations\20181125130654_AddPrescision4.designer.cs">
       <DependentUpon>20181125130654_AddPrescision4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20190309115150_RenameEntities.cs" />
+    <Compile Include="Migrations\20190309115150_RenameEntities.designer.cs">
+      <DependentUpon>20190309115150_RenameEntities.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\ClonesContextEFModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

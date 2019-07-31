@@ -42,10 +42,10 @@ namespace AgeOfClones
             services.AddTransient<ITableEditorService, TableEditorService>();
 
             services.AddTransient<IProfileRepository, ProfileRepository>();
-            services.AddTransient<IAccountRepository, AccountRepository>();
+            services.AddTransient<IAccountManagementRepository, AccountRepository>();
             services.AddTransient<IStockRepository, StockRepository>();
             services.AddTransient<ICurrencyRepository, CurrencyRepository>();
-            services.AddTransient<IResourceRepository, ResourceRepository>();
+            services.AddTransient<IResourceManagementRepository, ResourceRepository>();
 
             services.AddTransient<IResourceUOW, ResourceUOW>();
 

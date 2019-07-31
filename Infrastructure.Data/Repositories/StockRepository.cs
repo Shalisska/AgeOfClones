@@ -39,14 +39,14 @@ namespace Infrastructure.Data.Repositories
 
         public void Create(StockManagementModel item)
         {
-            Stock stock = new Stock(item.Id, item.Name);
+            StockEF stock = new StockEF(item.Id, item.Name);
             _db.Stocks.Add(stock);
             _db.SaveChanges();
         }
 
         public void Update(StockManagementModel item)
         {
-            Stock stock = new Stock(item.Id, item.Name);
+            StockEF stock = new StockEF(item.Id, item.Name);
             _db.Entry(stock).State = EntityState.Modified;
             _db.SaveChanges();
         }

@@ -3,7 +3,7 @@ using System;
 
 namespace Application.Data.Repositories
 {
-    public interface IAccountRepository : IRepositorySimple<AccountManagementModel>, IDisposable
+    public interface IAccountManagementRepository : IRepositorySimple<AccountManagementModel>, IDisposable
     {
     }
 }

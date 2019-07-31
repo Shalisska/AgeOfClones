@@ -4,11 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Infrastructure.Data.Entities
 {
-    public class Currency
+    [Table("Currencies")]
+    public class CurrencyEF
     {
-        public Currency() { }
+        public CurrencyEF() { }
 
-        public Currency(
+        public CurrencyEF(
             int id,
             string name,
             int stockId)
@@ -23,7 +24,7 @@ namespace Infrastructure.Data.Entities
 
         public int StockId { get; set; }
 
-        public Stock Stock { get; set; }
-        public ICollection<CurrencyExchangeRate> ExchangeRates { get; set; }
+        public StockEF Stock { get; set; }
+        public ICollection<CurrencyExchangeRateEF> ExchangeRates { get; set; }
     }
 }

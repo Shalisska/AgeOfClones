@@ -16,7 +16,7 @@ namespace Infrastructure.Data.UnitsOfWork
             _db = context;
         }
 
-        public IResourceRepository Resources
+        public IResourceManagementRepository Resources
         {
             get
             {

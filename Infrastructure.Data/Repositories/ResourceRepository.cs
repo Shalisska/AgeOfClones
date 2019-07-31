@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Infrastructure.Data.Repositories
 {
-    public class ResourceRepository : IResourceRepository
+    public class ResourceRepository : IResourceManagementRepository
     {
         private ClonesContextEF _db;
         private ResourceRepositoryXML _repositoryXML;
@@ -55,7 +55,7 @@ namespace Infrastructure.Data.Repositories
 
         public void Create(ResourceManagementModel item)
         {
-            var newItem = new Resource(
+            var newItem = new ResourceEF(
                 item.Id,
                 item.Name,
                 item.PriceBase,
@@ -68,7 +68,7 @@ namespace Infrastructure.Data.Repositories
 
         public void Update(ResourceManagementModel item)
         {
-            var newItem = new Resource(
+            var newItem = new ResourceEF(
                 item.Id,
                 item.Name,
                 item.PriceBase,
@@ -89,7 +89,7 @@ namespace Infrastructure.Data.Repositories
         public void UpdateFromXML()
         {
             IEnumerable<ResourceXML> resourcesXML = _repositoryXML.GetResourcesFromXML();
-            IEnumerable<Resource> resources = _db.Resources.ToList();
+            IEnumerable<ResourceEF> resources = _db.Resources.ToList();
 
             foreach (var item in resourcesXML)
             {
@@ -97,7 +97,7 @@ namespace Infrastructure.Data.Repositories
 
                 if (resource == null)
                 {
-                    var newResource = new Resource()
+                    var newResource = new ResourceEF()
                     {
                         Name = item.Name,
                         PriceBase = item.PriceBase,
