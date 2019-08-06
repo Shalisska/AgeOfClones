@@ -7,7 +7,6 @@ using Application.Services;
 using Infrastructure.Data.EF;
 using Infrastructure.Data.Repositories;
 using Infrastructure.Data.UnitsOfWork;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -36,9 +35,6 @@ namespace AgeOfClones
             services.AddTransient<ICurrencyManagementService, CurrencyManagementService>();
             services.AddTransient<IResourceManagementService, ResourceManagementService>();
 
-
-            services.AddTransient<IAuthorizationService, AuthorizationService>();
-
             services.AddTransient<ITableEditorService, TableEditorService>();
 
             services.AddTransient<IProfileRepository, ProfileRepository>();
@@ -48,13 +44,6 @@ namespace AgeOfClones
             services.AddTransient<IResourceManagementRepository, ResourceRepository>();
 
             services.AddTransient<IResourceUOW, ResourceUOW>();
-
-            // установка конфигурации подключения
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options => //CookieAuthenticationOptions
-                {
-                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Authorization/Index");
-                });
 
             services.AddMvc();
         }
@@ -73,8 +62,6 @@ namespace AgeOfClones
             }
 
             app.UseStaticFiles();
-
-            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

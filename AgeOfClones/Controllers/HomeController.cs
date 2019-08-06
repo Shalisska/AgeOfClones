@@ -1,28 +1,17 @@
 ﻿using Application.Interfaces;
+using Application.Management.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace AgeOfClones.Controllers
 {
     public class HomeController : Controller
     {
-        IAuthorizationService _authorizationService;
-
-        public HomeController(IAuthorizationService authorizationService)
-        {
-            _authorizationService = authorizationService;
-        }
-
         public IActionResult Index()
         {
-            var model = _authorizationService.GetProfiles();
-            ViewData["User"] = User.Identity.Name ?? "none";
+            var model = new List<ProfileManagementModel>();
 
             return View(model);
         }
-
-        //public IActionResult Error()
-        //{
-        //    return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        //}
     }
 }
