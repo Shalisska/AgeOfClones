@@ -1,12 +1,55 @@
-﻿@using AgeOfClones.Areas.Management.Models
-@using Application.Management.Models
-
-@model ManagementTableViewModel
+﻿@{ 
+    var controllerName = "Resource";
+    var loadActionName = "Resources";
+    var updateActionName = "UpdateResource";
+    var createActionName = "CreateResource";
+    var deleteActionName = "DeleteResource";
+}
 
 <p style="margin-top:10px;">
     <a asp-area="Management" asp-controller="Resource" asp-action="UpdateResourcesFromXML">Update Resources from site</a>
 </p>
 
 
-@{ Html.RenderPartial("TableEditor/_Table"); }
+@*@{ Html.RenderPartial("TableEditor/_Table"); }*@
 
+<div id="grid"></div>
+<script>
+    $(function () {
+        var opts = {
+            dataSource: DevExpress.data.AspNet.createStore({
+                key: "id",
+                loadUrl: "@Url.Action(loadActionName, controllerName)",
+                updateUrl: "@Url.Action(updateActionName, controllerName)",
+                insertUrl: "@Url.Action(createActionName, controllerName)",
+                deleteUrl: "@Url.Action(deleteActionName, controllerName)",
+
+                onBeforeSend: function (operation, ajaxSettings) {
+                    // operation - any of "load", "update", "insert", "delete"
+                    // ajaxSettings - http://api.jquery.com/jquery.ajax/
+                }
+            }),
+
+            columns: [
+                "id",
+                "name",
+                "priceBase",
+                "price",
+                {
+                    dataField: "stockId",
+                    caption: "Stock",
+                    lookup: {
+                        valueExpr: "value",
+                        displayExpr: "text",
+                        dataSource: DevExpress.data.AspNet.createStore({
+                            key: "value",
+                            loadUrl: "@Url.Action("StocksLookup", controllerName)"
+                        })
+                    }
+                }
+            ]
+        }
+
+        clonesUtils.dxDataGridExt().init('#grid', opts);
+    });
+</script>

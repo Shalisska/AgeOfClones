@@ -1,11 +1,9 @@
-﻿using AgeOfClones.Areas.Management.Models;
-using Application.Interfaces;
+﻿using AgeOfClones.Utils;
 using Application.Management.Interfaces;
 using Application.Management.Models;
-using Application.Models.TableEditor;
+using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
+using Newtonsoft.Json;
 using System.Linq;
 
 namespace AgeOfClones.Areas.Management.Controllers
@@ -14,131 +12,92 @@ namespace AgeOfClones.Areas.Management.Controllers
     public class ResourceController : Controller
     {
         IResourceManagementService _resourceManagementService;
-        ITableEditorService _tableEditorService;
 
         public ResourceController(
-            IResourceManagementService resourceManagementService,
-            ITableEditorService tableEditorService)
+            IResourceManagementService resourceManagementService)
         {
             _resourceManagementService = resourceManagementService;
-            _tableEditorService = tableEditorService;
-        }
-
-        private TableEditorModel GetTableModel(IEnumerable<ResourceManagementModel> entities, ResourceManagementModel entity)
-        {
-            var entityType = typeof(ResourceManagementModel);
-
-            var tableModel = new TableEditorModel("Resources", entityType, "Id", entities, entity);
-
-            var stocks = _resourceManagementService.GetStocks().OrderBy(s => s.Name);
-
-            _tableEditorService.AddColumn(tableModel, "Id", null);
-            _tableEditorService.AddColumn(tableModel, "Name", null, ControlType.Input, null);
-            _tableEditorService.AddColumn(tableModel, "PriceBase", null, ControlType.Input, null);
-            _tableEditorService.AddColumn(tableModel, "Price", null, ControlType.Input, null);
-            _tableEditorService.AddColumn(tableModel, "Performance", null, ControlType.Input, null);
-            _tableEditorService.AddColumn(tableModel, "StockId", null, ControlType.Select, new SelectList(stocks, "Id", "Name"));
-
-            return tableModel;
         }
 
         public IActionResult Index()
         {
-            var resources = _resourceManagementService.GetResources();
-            var tableModel = GetTableModel(resources, null);
-
-            var model = new ManagementTableViewModel(tableModel, nameof(CreateResource), nameof(EditResource), nameof(DeleteResource));
-
-            return View(model);
+            return View();
         }
 
-        public IActionResult CreateResource()
+        [HttpGet("resources")]
+        public object Resources(DataSourceLoadOptions loadOptions)
         {
-            var tableModel = GetTableModel(null, null);
-            var model = tableModel.GetNewRow().ToList();
-
-            ViewData["Action"] = nameof(CreateResource);
-            return PartialView("TableEditor/_TableCreate", model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult CreateResource(ResourceManagementModel resource)
-        {
-            try
+            var source = _resourceManagementService.GetResources().Select(r => new
             {
-                // TODO: Add insert logic here
-                if (ModelState.IsValid)
+                r.Id,
+                r.Name,
+                r.PriceBase,
+                r.Price,
+                r.StockId
+            });
+
+            loadOptions.PrimaryKey = new[] { "Id" };
+            loadOptions.PaginateViaPrimaryKey = true;
+
+            return DataSourceLoader.Load(source, loadOptions);
+        }
+
+        [HttpGet("stocks-lookup")]
+        public object StocksLookup(DataSourceLoadOptions options)
+        {
+            return DataSourceLoader.Load(
+                from s in _resourceManagementService.GetStocks()
+                orderby s.Name
+                select new
                 {
-                    _resourceManagementService.CreateResource(resource);
-                }
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return RedirectToAction(nameof(CreateResource));
-            }
+                    Value = s.Id,
+                    Text = s.Name
+                },
+                options
+            );
         }
 
-        public IActionResult EditResource(int id)
+        [HttpPut("update-resource")]
+        public IActionResult UpdateResource(int key, string values)
         {
-            var resource = _resourceManagementService.GetResource(id);
+            var res = _resourceManagementService.GetResource(key);
+            if (res == null)
+                return StatusCode(409, "Resource not found");
 
-            var tableModel = GetTableModel(null, resource);
-            var model = tableModel.GetCurrentRow().ToList();
+            JsonConvert.PopulateObject(values, res);
 
-            ViewData["Action"] = nameof(EditResource);
-            return PartialView("TableEditor/_TableEdit", model);
+            if (!TryValidateModel(res))
+                return BadRequest(ModelState.ToFullErrorString());
+
+            _resourceManagementService.UpdateResource(res);
+
+            return Ok();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult EditResource(ResourceManagementModel resource)
+        [HttpPost("create-resource")]
+        public IActionResult CreateResource(string values)
         {
-            try
-            {
-                // TODO: Add update logic here
-                if (ModelState.IsValid)
-                {
-                    _resourceManagementService.UpdateResource(resource);
-                }
+            var resource = new ResourceManagementModel();
+            JsonConvert.PopulateObject(values, resource);
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return RedirectToAction(nameof(EditResource));
-            }
+            if (!TryValidateModel(resource))
+                return BadRequest(ModelState.ToFullErrorString());
+
+            _resourceManagementService.CreateResource(resource);
+
+            return Json(resource.Id);
         }
-
-        public IActionResult DeleteResource(int? id)
+        
+        [HttpDelete("delete-resource")]
+        public IActionResult DeleteOrder(int key)
         {
-            var model = _resourceManagementService.GetResource(id.Value);
+            var resource = _resourceManagementService.GetResource(key);
+            if (resource == null)
+                return StatusCode(409, "Resource not found");
 
-            if (model == null)
-                return RedirectToAction(nameof(Index));
+            _resourceManagementService.DeleteResource(key);
 
-            ViewData["Name"] = model.Name;
-            ViewData["Action"] = nameof(DeleteResource);
-            return PartialView("TableEditor/_TableDelete");
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteResource(int id)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-                _resourceManagementService.DeleteResource(id);
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return RedirectToAction(nameof(DeleteResource));
-            }
+            return Ok();
         }
 
         public ActionResult UpdateResourcesFromXML()

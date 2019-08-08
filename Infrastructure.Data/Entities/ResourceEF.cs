@@ -35,5 +35,19 @@ namespace Infrastructure.Data.Entities
         public int StockId { get; set; }
 
         public StockEF Stock { get; set; }
+
+        public void UpdateByEntity(
+            string name,
+            decimal priceBase,
+            decimal price,
+            int performance,
+            int stockId)
+        {
+            Name = name;
+            PriceBase = priceBase;
+            Price = price;
+            Performance = performance;
+            StockId = stockId;
+        }
     }
 }

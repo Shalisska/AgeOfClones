@@ -68,15 +68,15 @@ namespace Infrastructure.Data.Repositories
 
         public void Update(ResourceManagementModel item)
         {
-            var newItem = new ResourceEF(
-                item.Id,
+            var itemUpdating = _db.Resources.FirstOrDefault(i => i.Id == item.Id);
+            itemUpdating.UpdateByEntity(
                 item.Name,
                 item.PriceBase,
                 item.Price,
                 item.Performance,
                 item.StockId);
 
-            _db.Entry(newItem).State = EntityState.Modified;
+            _db.Entry(itemUpdating).State = EntityState.Modified;
         }
 
         public void Delete(int id)
