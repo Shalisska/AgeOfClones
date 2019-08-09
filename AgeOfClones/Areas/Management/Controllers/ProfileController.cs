@@ -1,13 +1,9 @@
-﻿using AgeOfClones.Areas.Management.Models;
-using AgeOfClones.Models;
+﻿using AgeOfClones.Models;
 using AgeOfClones.Utils;
-using Application.Interfaces;
 using Application.Management.Interfaces;
 using Application.Management.Models;
-using Application.Models.TableEditor;
 using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +14,11 @@ namespace AgeOfClones.Areas.Management.Controllers
     public class ProfileController : Controller
     {
         IProfileManagementService _profileManagementService;
-        ITableEditorService _tableEditorService;
 
         public ProfileController(
-            IProfileManagementService profileManagementService,
-            ITableEditorService tableEditorService)
+            IProfileManagementService profileManagementService)
         {
             _profileManagementService = profileManagementService;
-            _tableEditorService = tableEditorService;
         }
 
         #region Profile

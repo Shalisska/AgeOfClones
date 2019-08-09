@@ -1,9 +1,10 @@
-﻿using AgeOfClones.Areas.Management.Models;
-using Application.Interfaces;
+﻿using AgeOfClones.Models;
+using AgeOfClones.Utils;
 using Application.Management.Interfaces;
 using Application.Management.Models;
-using Application.Models.TableEditor;
+using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,125 +14,99 @@ namespace AgeOfClones.Areas.Management.Controllers
     public class StockController : Controller
     {
         IStockManagementService _stockManagementService;
-        ITableEditorService _tableEditorService;
 
         public StockController(
-            IStockManagementService stockManagementService,
-            ITableEditorService tableEditorService)
+            IStockManagementService stockManagementService)
         {
             _stockManagementService = stockManagementService;
-            _tableEditorService = tableEditorService;
         }
 
         public IActionResult Index()
         {
-            var stocks = _stockManagementService.GetStocks();
-            var tableModel = GetTableModel(stocks, null);
+            var loadActionName = "Stocks";
+            var updateActionName = "UpdateStock";
+            var createActionName = "CreateStock";
+            var deleteActionName = "DeleteStock";
 
-            var model = new ManagementTableViewModel(tableModel, nameof(CreateStock), nameof(EditStock), nameof(DeleteStock));
-
-            return View("TableEditor/_Table", model);
-        }
-
-        public IActionResult CreateStock()
-        {
-            var tableModel = GetTableModel(null, null);
-            var model = tableModel.GetNewRow().ToList();
-
-            ViewData["Action"] = nameof(CreateStock);
-            return PartialView("TableEditor/_TableCreate", model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult CreateStock(StockManagementModel stock)
-        {
-            try
+            var source = new DEGridTableDataSource
             {
-                // TODO: Add insert logic here
-                if (ModelState.IsValid)
-                {
-                    _stockManagementService.CreateStock(stock);
-                }
+                Type = "createStore",
+                Key = "id",
+                LoadUrl = Url.Action(loadActionName),
+                UpdateUrl = Url.Action(updateActionName),
+                CreateUrl = Url.Action(createActionName),
+                DeleteUrl = Url.Action(deleteActionName)
+            };
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
+            var columns = new List<DEGridTableColumn>();
+            columns.Add(new DEGridTableColumn("id"));
+            columns.Add(new DEGridTableColumn("name"));
+
+            var gridTable = new DEGridTable
             {
-                return RedirectToAction(nameof(CreateStock));
-            }
+                DataSource = source,
+                Columns = columns
+            };
+
+            return View("DevExpressTmpl/_GridTable", gridTable);
         }
 
-        public IActionResult EditStock(int id)
+        [HttpGet("stocks")]
+        public object Stocks(DataSourceLoadOptions loadOptions)
         {
-            var stock = _stockManagementService.GetStock(id);
+            var source = _stockManagementService.GetStocks().Select(r => new
+            {
+                r.Id,
+                r.Name
+            });
 
-            var tableModel = GetTableModel(null, stock);
-            var model = tableModel.GetCurrentRow().ToList();
+            loadOptions.PrimaryKey = new[] { "Id" };
+            loadOptions.PaginateViaPrimaryKey = true;
 
-            ViewData["Action"] = nameof(EditStock);
-            return PartialView("TableEditor/_TableEdit", model);
+            return DataSourceLoader.Load(source, loadOptions);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult EditStock(StockManagementModel stock)
+        [HttpPut("update-stock")]
+        public IActionResult UpdateStock(int key, string values)
         {
-            try
-            {
-                // TODO: Add update logic here
-                if (ModelState.IsValid)
-                {
-                    _stockManagementService.UpdateStock(stock);
-                }
+            var res = _stockManagementService.GetStock(key);
+            if (res == null)
+                return StatusCode(409, "Stock not found");
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return RedirectToAction(nameof(EditStock));
-            }
+            JsonConvert.PopulateObject(values, res);
+
+            if (!TryValidateModel(res))
+                return BadRequest(ModelState.ToFullErrorString());
+
+            _stockManagementService.UpdateStock(res);
+
+            return Ok();
         }
 
-        public IActionResult DeleteStock(int? id)
+        [HttpPost("create-stock")]
+        public IActionResult CreateStock(string values)
         {
-            var model = _stockManagementService.GetStock(id.Value);
+            var stock = new StockManagementModel();
+            JsonConvert.PopulateObject(values, stock);
 
-            if (model == null)
-                return RedirectToAction(nameof(Index));
+            if (!TryValidateModel(stock))
+                return BadRequest(ModelState.ToFullErrorString());
 
-            ViewData["Name"] = model.Name;
-            ViewData["Action"] = nameof(DeleteStock);
-            return PartialView("TableEditor/_TableDelete");
+            _stockManagementService.CreateStock(stock);
+
+            return Json(stock.Id);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteStock(int id)
+        [HttpDelete("delete-stock")]
+        public IActionResult DeleteStock(int key)
         {
-            try
-            {
-                // TODO: Add delete logic here
-                _stockManagementService.DeleteStock(id);
+            var stock = _stockManagementService.GetStock(key);
+            if (stock == null)
+                return StatusCode(409, "Stock not found");
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return RedirectToAction(nameof(DeleteStock));
-            }
-        }
+            _stockManagementService.DeleteStock(key);
 
-        private TableEditorModel GetTableModel(IEnumerable<StockManagementModel> stocks, StockManagementModel stock)
-        {
-            var entityType = typeof(StockManagementModel);
-
-            var tableModel = new TableEditorModel("Stocks", entityType, "Id", stocks, stock);
-
-            _tableEditorService.AddColumn(tableModel, "Id", null);
-            _tableEditorService.AddColumn(tableModel, "Name", null, ControlType.Input, null);
-
-            return tableModel;
+            return Ok();
         }
     }
 }

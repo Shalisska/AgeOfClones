@@ -46,7 +46,8 @@ namespace Infrastructure.Data.Repositories
 
         public void Update(StockManagementModel item)
         {
-            StockEF stock = new StockEF(item.Id, item.Name);
+            var stock = _db.Stocks.FirstOrDefault(s => s.Id == item.Id);
+            stock.UpdateByEntity(item.Name);
             _db.Entry(stock).State = EntityState.Modified;
             _db.SaveChanges();
         }
