@@ -1,9 +1,11 @@
-﻿using AgeOfClones.Utils;
+﻿using AgeOfClones.Models;
+using AgeOfClones.Utils;
 using Application.Management.Interfaces;
 using Application.Management.Models;
 using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AgeOfClones.Areas.Management.Controllers
@@ -21,7 +23,52 @@ namespace AgeOfClones.Areas.Management.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var loadActionName = "Resources";
+            var updateActionName = "UpdateResource";
+            var createActionName = "CreateResource";
+            var deleteActionName = "DeleteResource";
+            var stocksLookupActionName = "StocksLookup";
+
+            var source = new DEGridTableDataSource
+            {
+                Type = "createStore",
+                Key = "id",
+                LoadUrl = Url.Action(loadActionName),
+                UpdateUrl = Url.Action(updateActionName),
+                CreateUrl = Url.Action(createActionName),
+                DeleteUrl = Url.Action(deleteActionName)
+            };
+
+            var columns = new List<DEGridTableColumn>();
+            columns.Add(new DEGridTableColumn("id"));
+            columns.Add(new DEGridTableColumn("name"));
+            columns.Add(new DEGridTableColumn("priceBase"));
+            columns.Add(new DEGridTableColumn("price"));
+            columns.Add(new DEGridTableColumn
+            {
+                IsSimple = false,
+                DataField = "stockId",
+                Caption = "Stock",
+                Lookup = new DEGridTableLookup
+                {
+                    ValueExpr = "value",
+                    DisplayExpr = "text",
+                    DataSource = new DEGridTableDataSource
+                    {
+                        Type = "createStore",
+                        Key = "value",
+                        LoadUrl = Url.Action(stocksLookupActionName)
+                    }
+                }
+            });
+
+            var gridTable = new DEGridTable
+            {
+                DataSource = source,
+                Columns = columns
+            };
+
+            return View("DevExpressTmpl/_GridTable", gridTable);
         }
 
         [HttpGet("resources")]
@@ -89,7 +136,7 @@ namespace AgeOfClones.Areas.Management.Controllers
         }
         
         [HttpDelete("delete-resource")]
-        public IActionResult DeleteOrder(int key)
+        public IActionResult DeleteResource(int key)
         {
             var resource = _resourceManagementService.GetResource(key);
             if (resource == null)
