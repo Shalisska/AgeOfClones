@@ -73,7 +73,8 @@ namespace AgeOfClones.Areas.Management.Controllers
             var gridTable = new DEGridTable
             {
                 DataSource = source,
-                Columns = columns
+                Columns = columns,
+                MasterDetailName = "currencyTable.masterDetail"
             };
 
             return View(gridTable);
@@ -151,22 +152,6 @@ namespace AgeOfClones.Areas.Management.Controllers
             _currencyManagementService.DeleteCurrency(key);
 
             return Ok();
-        }
-
-        private TableEditorModel GetExchangeTableModel(IEnumerable<CurrencyExchangeRateManagementModel> currencyExchanges, CurrencyExchangeRateManagementModel currencyExchange, string currentCurrencyName)
-        {
-            var entityType = typeof(CurrencyExchangeRateManagementModel);
-
-            var tableModel = new TableEditorModel(currentCurrencyName, entityType, "CurrencyPairId", currencyExchanges, currencyExchange);
-
-            var currencies = _currencyManagementService.GetCurrencies().Where(c => c.Name != currentCurrencyName).OrderBy(s => s.Name);
-
-            _tableEditorService.AddColumn(tableModel, "CurrencyId", null);
-            _tableEditorService.AddColumn(tableModel, "CurrencyPairId", null, ControlType.Select, new SelectList(currencies, "Id", "Name"));
-            _tableEditorService.AddColumn(tableModel, "Buy", null, ControlType.Input, null);
-            _tableEditorService.AddColumn(tableModel, "Sell", null, ControlType.Input, null);
-
-            return tableModel;
         }
 
         [HttpGet]

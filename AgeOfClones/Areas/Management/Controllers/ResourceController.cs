@@ -68,7 +68,7 @@ namespace AgeOfClones.Areas.Management.Controllers
                 Columns = columns
             };
 
-            return View("DevExpressTmpl/_GridTable", gridTable);
+            return View(gridTable);
         }
 
         [HttpGet("resources")]

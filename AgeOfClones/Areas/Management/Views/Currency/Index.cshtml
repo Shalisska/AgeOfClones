@@ -9,59 +9,59 @@
     var deleteActionName = "DeleteExchangeRate";
 }
 
-<script>
-    var currencyTable = {
-        masterDetail: {
-            enabled: true,
-            autoExpandAll: true,
-            template: function (container, options) {
-                var currencyId = options.data.id;
-                var currencies = options.component.getDataSource()._items;
-                currencies = $.grep(currencies, function (el) {
-                    return el.id != currencyId;
-                });
 
-                $("<div>")
-                    .dxDataGrid({
-                        onInitNewRow: function (e) {
-                            e.data["currencyId"] = currencyId;
-                        },
-                        dataSource: DevExpress.data.AspNet.createStore({
-                            key: ["currencyId", "currencyPairId"],
-                            loadParams: { id: currencyId },
-                            loadUrl: "@Url.Action(loadActionName, controllerName)",
-                            updateUrl: "@Url.Action(updateActionName, controllerName)",
-                            insertUrl: "@Url.Action(createActionName, controllerName)",
-                            deleteUrl: "@Url.Action(deleteActionName, controllerName)",
-                        }),
-                        columns: [
-                            {
-                                dataField: "currencyPairId",
-                                caption: "Currency",
-                                lookup: {
-                                    valueExpr: "id",
-                                    displayExpr: "name",
-                                    dataSource: {
-                                        store: currencies
-                                    }
-                                }
-                            },
-                            "buy",
-                            "sell"
-                        ],
-                    editing: {
-                        mode: "batch",
-                        allowUpdating: true,
-                        selectTextOnEditStart: true,
-                        startEditAction: "click",
-                        allowAdding: true,
-                        allowDeleting: true
+<script>
+var currencyTable = {
+    masterDetail: {
+        enabled: true,
+        template: function (container, options) {
+            var currencyId = options.data.id;
+            var currencies = options.component.getDataSource()._items;
+            currencies = $.grep(currencies, function (el) {
+                return el.id != currencyId;
+            });
+
+            $("<div>")
+                .dxDataGrid({
+                    onInitNewRow: function (e) {
+                        e.data["currencyId"] = currencyId;
                     },
-                    showBorders: true
-                    }).appendTo(container);
-            }
+                    dataSource: DevExpress.data.AspNet.createStore({
+                        key: ["currencyId", "currencyPairId"],
+                        loadParams: { id: currencyId },
+                        loadUrl: "@Url.Action(loadActionName, controllerName)",
+                        updateUrl: "@Url.Action(updateActionName, controllerName)",
+                        insertUrl: "@Url.Action(createActionName, controllerName)",
+                        deleteUrl: "@Url.Action(deleteActionName, controllerName)",
+                    }),
+                    columns: [
+                        {
+                            dataField: "currencyPairId",
+                            caption: "Currency",
+                            lookup: {
+                                valueExpr: "id",
+                                displayExpr: "name",
+                                dataSource: {
+                                    store: currencies
+                                }
+                            }
+                        },
+                        "buy",
+                        "sell"
+                    ],
+                editing: {
+                    mode: "batch",
+                    allowUpdating: true,
+                    selectTextOnEditStart: true,
+                    startEditAction: "click",
+                    allowAdding: true,
+                    allowDeleting: true
+                },
+                showBorders: true
+                }).appendTo(container);
         }
-    };
+    }
+};
 </script>
 
 @{ Html.RenderPartial("DevExpressTmpl/_GridTable"); }

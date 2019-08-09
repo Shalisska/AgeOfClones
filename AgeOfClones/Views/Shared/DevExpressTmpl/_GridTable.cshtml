@@ -2,11 +2,8 @@
 
 @model DEGridTable
 
-@{
-    var dataSource = Model.DataSource;
-}
-
 <div id="grid"></div>
+
 <script>
     $(function () {
         $('#grid').dxDataGrid({
@@ -44,7 +41,12 @@
             rowAlternationEnabled: true,
             showBorders: true,
             columnMinWidth: 50,
-            masterDetail: currencyTable.masterDetail
+            @if (Model.MasterDetailName != null)
+            {
+                <text>
+                    masterDetail: @Model.MasterDetailName
+                </text>
+            }
         });
     });
 </script>
@@ -55,7 +57,7 @@
         var strBuilder = new HtmlContentBuilder();
 
         strBuilder.AppendHtml("[");
-        foreach(var column in columns)
+        foreach (var column in columns)
         {
             if (column.IsSimple)
                 strBuilder.AppendHtml("\"" + column.DataField + "\",");

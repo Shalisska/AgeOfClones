@@ -9,6 +9,7 @@ namespace AgeOfClones.Models
     {
         public DEGridTableDataSource DataSource { get; set; }
         public List<DEGridTableColumn> Columns { get; set; }
+        public string MasterDetailName { get; set; }
     }
 
     public class DEGridTableDataSource
