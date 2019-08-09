@@ -47,7 +47,10 @@ namespace Infrastructure.Data.Repositories
 
         public void Update(AccountManagementModel item)
         {
-            var account = new AccountEF(item.Id, item.Name, item.ProfileId, null);
+            var account = _db.Accounts.FirstOrDefault(a => a.Id == item.Id);
+            account.UpdateByEntity(
+                item.Name,
+                item.ProfileId);
             _db.Entry(account).State = EntityState.Modified;
             _db.SaveChanges();
         }

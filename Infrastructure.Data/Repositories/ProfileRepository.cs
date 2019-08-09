@@ -47,7 +47,8 @@ namespace Infrastructure.Data.Repositories
 
         public void Update(ProfileManagementModel item)
         {
-            ProfileEF profile = new ProfileEF(item.Id, item.Name, null);
+            var profile = _db.Profiles.FirstOrDefault(p => p.Id == item.Id);
+            profile.UpdateByEntity(item.Name);
             _db.Entry(profile).State = EntityState.Modified;
             _db.SaveChanges();
         }

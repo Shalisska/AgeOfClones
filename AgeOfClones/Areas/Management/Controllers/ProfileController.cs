@@ -1,10 +1,14 @@
 ﻿using AgeOfClones.Areas.Management.Models;
+using AgeOfClones.Models;
+using AgeOfClones.Utils;
 using Application.Interfaces;
 using Application.Management.Interfaces;
 using Application.Management.Models;
 using Application.Models.TableEditor;
+using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -27,236 +31,215 @@ namespace AgeOfClones.Areas.Management.Controllers
         #region Profile
         public IActionResult Index()
         {
-            var profiles = _profileManagementService.GetProfiles();
-            var tableModel = GetTableModel(profiles, null);
+            var loadActionName = "Profiles";
+            var updateActionName = "UpdateProfile";
+            var createActionName = "CreateProfile";
+            var deleteActionName = "DeleteProfile";
 
-            var model = new ManagementTableViewModel(tableModel, nameof(CreateProfile), nameof(EditProfile), nameof(DeleteProfile));
-
-            return View("TableEditor/_Table", model);
-        }
-
-        private TableEditorModel GetTableModel(IEnumerable<ProfileManagementModel> profiles, ProfileManagementModel profile)
-        {
-            var entityType = typeof(ProfileManagementModel);
-
-            var tableModel = new TableEditorModel("Profiles", entityType, "Id", profiles, profile);
-
-            _tableEditorService.AddColumn(tableModel, "Id", null);
-            _tableEditorService.AddColumn(tableModel, "Name", null, ControlType.Input, null);
-
-            return tableModel;
-        }
-
-        public IActionResult CreateProfile()
-        {
-            var tableModel = GetTableModel(null, null);
-            var model = tableModel.GetNewRow().ToList();
-
-            ViewData["Action"] = "CreateProfile";
-            return PartialView("TableEditor/_TableCreate", model);
-        }
-
-        // POST: Profile/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult CreateProfile(ProfileManagementModel profile)
-        {
-            try
+            var source = new DEGridTableDataSource
             {
-                // TODO: Add insert logic here
-                if (ModelState.IsValid)
-                {
-                    _profileManagementService.CreateProfile(profile);
-                }
+                Type = "createStore",
+                Key = "id",
+                LoadUrl = Url.Action(loadActionName),
+                UpdateUrl = Url.Action(updateActionName),
+                CreateUrl = Url.Action(createActionName),
+                DeleteUrl = Url.Action(deleteActionName)
+            };
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
+            var columns = new List<DEGridTableColumn>();
+            columns.Add(new DEGridTableColumn("id"));
+            columns.Add(new DEGridTableColumn("name"));
+
+            var gridTable = new DEGridTable
             {
-                return RedirectToAction("CreateProfile");
-            }
+                DataSource = source,
+                Columns = columns
+            };
+
+            return View("DevExpressTmpl/_GridTable", gridTable);
         }
 
-        // GET: Profile/Edit/5
-        public IActionResult EditProfile(int id)
+        [HttpGet("profiles")]
+        public object Profiles(DataSourceLoadOptions loadOptions)
         {
-            var profile = _profileManagementService.GetProfile(id);
+            var source = _profileManagementService.GetProfiles().Select(r => new
+            {
+                r.Id,
+                r.Name
+            });
 
-            var tableModel = GetTableModel(null, profile);
-            var model = tableModel.GetCurrentRow().ToList();
+            loadOptions.PrimaryKey = new[] { "Id" };
+            loadOptions.PaginateViaPrimaryKey = true;
 
-            ViewData["Action"] = "EditProfile";
-            return PartialView("TableEditor/_TableEdit", model);
+            return DataSourceLoader.Load(source, loadOptions);
         }
 
-        // POST: Profile/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult EditProfile(ProfileManagementModel profile)
+        [HttpPut("update-profile")]
+        public IActionResult UpdateProfile(int key, string values)
         {
-            try
-            {
-                // TODO: Add update logic here
-                if (ModelState.IsValid)
-                {
-                    _profileManagementService.UpdateProfile(profile);
-                }
+            var profile = _profileManagementService.GetProfile(key);
+            if (profile == null)
+                return StatusCode(409, "Profile not found");
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return RedirectToAction("EditProfile");
-            }
+            JsonConvert.PopulateObject(values, profile);
+
+            if (!TryValidateModel(profile))
+                return BadRequest(ModelState.ToFullErrorString());
+
+            _profileManagementService.UpdateProfile(profile);
+
+            return Ok();
         }
 
-        // GET: Profile/Delete/5
-        public IActionResult DeleteProfile(int? id)
+        [HttpPost("create-profile")]
+        public IActionResult CreateProfile(string values)
         {
-            var model = _profileManagementService.GetProfile(id.Value);
+            var profile = new ProfileManagementModel();
+            JsonConvert.PopulateObject(values, profile);
 
-            if(model==null)
-                return RedirectToAction(nameof(Index));
+            if (!TryValidateModel(profile))
+                return BadRequest(ModelState.ToFullErrorString());
 
-            ViewData["Name"] = model.Name;
-            ViewData["Action"] = "DeleteProfile";
-            return PartialView("TableEditor/_TableDelete");
+            _profileManagementService.CreateProfile(profile);
+
+            return Json(profile.Id);
         }
 
-        // POST: Profile/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteProfile(int id)
+        [HttpDelete("delete-profile")]
+        public IActionResult DeleteProfile(int key)
         {
-            try
-            {
-                // TODO: Add delete logic here
-                _profileManagementService.DeleteProfile(id);
+            var profile = _profileManagementService.GetProfile(key);
+            if (profile == null)
+                return StatusCode(409, "Profile not found");
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return RedirectToAction("DeleteProfile");
-            }
+            _profileManagementService.DeleteProfile(key);
+
+            return Ok();
         }
         #endregion Profile
 
         #region Account
         public IActionResult IndexAccount()
         {
-            var accounts = _profileManagementService.GetAccounts();
-            var tableModel = GetAccountTableModel(accounts, null);
+            var loadActionName = "Accounts";
+            var updateActionName = "UpdateAccount";
+            var createActionName = "CreateAccount";
+            var deleteActionName = "DeleteAccount";
+            var profileLookupActionName = "ProfileLookup";
 
-            var model = new ManagementTableViewModel(tableModel, nameof(CreateAccount), nameof(EditAccount), nameof(DeleteAccount));
-
-            return View("TableEditor/_Table", model);
-        }
-
-        private TableEditorModel GetAccountTableModel(IEnumerable<AccountManagementModel> accounts, AccountManagementModel account)
-        {
-            var entityType = typeof(AccountManagementModel);
-
-            var tableModel = new TableEditorModel("Accounts", entityType, "Id", accounts, account);
-            var profiles = _profileManagementService.GetProfiles().OrderBy(p => p.Name);
-
-            _tableEditorService.AddColumn(tableModel, "Id", null);
-            _tableEditorService.AddColumn(tableModel, "Name", null, ControlType.Input, null);
-            _tableEditorService.AddColumn(tableModel, "ProfileId", null, ControlType.Select, new SelectList(profiles, "Id", "Name"));
-
-            return tableModel;
-        }
-
-        public IActionResult CreateAccount()
-        {
-            var tableModel = GetAccountTableModel(null, null);
-            var model = tableModel.GetNewRow().ToList();
-
-            ViewData["Action"] = "CreateAccount";
-            return PartialView("TableEditor/_TableCreate", model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult CreateAccount(AccountManagementModel account)
-        {
-            try
+            var source = new DEGridTableDataSource
             {
-                // TODO: Add insert logic here
-                if (ModelState.IsValid)
+                Type = "createStore",
+                Key = "id",
+                LoadUrl = Url.Action(loadActionName),
+                UpdateUrl = Url.Action(updateActionName),
+                CreateUrl = Url.Action(createActionName),
+                DeleteUrl = Url.Action(deleteActionName)
+            };
+
+            var columns = new List<DEGridTableColumn>();
+            columns.Add(new DEGridTableColumn("id"));
+            columns.Add(new DEGridTableColumn("name"));
+            columns.Add(new DEGridTableColumn
+            {
+                IsSimple = false,
+                DataField = "profileId",
+                Caption = "Profile",
+                Lookup = new DEGridTableLookup
                 {
-                    _profileManagementService.CreateAccount(account);
+                    ValueExpr = "value",
+                    DisplayExpr = "text",
+                    DataSource = new DEGridTableDataSource
+                    {
+                        Type = "createStore",
+                        Key = "value",
+                        LoadUrl = Url.Action(profileLookupActionName)
+                    }
                 }
+            });
 
-                return RedirectToAction(nameof(IndexAccount));
-            }
-            catch
+            var gridTable = new DEGridTable
             {
-                return RedirectToAction(nameof(CreateAccount));
-            }
+                DataSource = source,
+                Columns = columns
+            };
+
+            return View("DevExpressTmpl/_GridTable", gridTable);
         }
 
-        public IActionResult EditAccount(int id)
+        [HttpGet("accounts")]
+        public object Accounts(DataSourceLoadOptions loadOptions)
         {
-            var account = _profileManagementService.GetAccount(id);
+            var source = _profileManagementService.GetAccounts().Select(s => new
+            {
+                s.Id,
+                s.Name,
+                s.ProfileId
+            });
 
-            var tableModel = GetAccountTableModel(null, account);
-            var model = tableModel.GetCurrentRow().ToList();
+            loadOptions.PrimaryKey = new[] { "Id" };
+            loadOptions.PaginateViaPrimaryKey = true;
 
-            ViewData["Action"] = "EditAccount";
-            return PartialView("TableEditor/_TableEdit", model);
+            return DataSourceLoader.Load(source, loadOptions);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult EditAccount(AccountManagementModel account)
+        [HttpGet("profile-lookup")]
+        public object ProfileLookup(DataSourceLoadOptions options)
         {
-            try
-            {
-                // TODO: Add update logic here
-                if (ModelState.IsValid)
+            return DataSourceLoader.Load(
+                from s in _profileManagementService.GetProfiles()
+                orderby s.Name
+                select new
                 {
-                    _profileManagementService.UpdateAccount(account);
-                }
-
-                return RedirectToAction(nameof(IndexAccount));
-            }
-            catch
-            {
-                return RedirectToAction(nameof(EditAccount));
-            }
+                    Value = s.Id,
+                    Text = s.Name
+                },
+                options
+            );
         }
 
-        public IActionResult DeleteAccount(int? id)
+        [HttpPut("update-account")]
+        public IActionResult UpdateAccount(int key, string values)
         {
-            var model = _profileManagementService.GetAccount(id.Value);
+            var res = _profileManagementService.GetAccount(key);
+            if (res == null)
+                return StatusCode(409, "Account not found");
 
-            if (model == null)
-                return RedirectToAction(nameof(IndexAccount));
+            JsonConvert.PopulateObject(values, res);
 
-            ViewData["Name"] = model.Name;
-            ViewData["Action"] = "DeleteAccount";
-            return PartialView("TableEditor/_TableDelete");
+            if (!TryValidateModel(res))
+                return BadRequest(ModelState.ToFullErrorString());
+
+            _profileManagementService.UpdateAccount(res);
+
+            return Ok();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteAccount(int id)
+        [HttpPost("create-account")]
+        public IActionResult CreateAccount(string values)
         {
-            try
-            {
-                // TODO: Add delete logic here
-                _profileManagementService.DeleteAccount(id);
+            var account = new AccountManagementModel();
+            JsonConvert.PopulateObject(values, account);
 
-                return RedirectToAction(nameof(IndexAccount));
-            }
-            catch
-            {
-                return RedirectToAction(nameof(DeleteAccount));
-            }
+            if (!TryValidateModel(account))
+                return BadRequest(ModelState.ToFullErrorString());
+
+            _profileManagementService.CreateAccount(account);
+
+            return Json(account.Id);
+        }
+
+        [HttpDelete("delete-account")]
+        public IActionResult DeleteAccount(int key)
+        {
+            var account = _profileManagementService.GetAccount(key);
+            if (account == null)
+                return StatusCode(409, "Account not found");
+
+            _profileManagementService.DeleteAccount(key);
+
+            return Ok();
         }
         #endregion Account
-
-
     }
 }

@@ -28,5 +28,13 @@ namespace Infrastructure.Data.Entities
 
         public int ProfileId { get; set; }
         public ProfileEF Profile { get; set; }
+
+        public void UpdateByEntity(
+            string name,
+            int profileId)
+        {
+            Name = name;
+            ProfileId = profileId;
+        }
     }
 }

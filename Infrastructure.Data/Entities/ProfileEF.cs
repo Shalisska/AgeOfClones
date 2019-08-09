@@ -21,5 +21,10 @@ namespace Infrastructure.Data.Entities
         public string Name { get; set; }
 
         public ICollection<AccountEF> Accounts { get; set; }
+
+        public void UpdateByEntity(string name)
+        {
+            Name = name;
+        }
     }
 }
