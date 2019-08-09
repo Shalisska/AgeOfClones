@@ -80,6 +80,36 @@ namespace Infrastructure.Data.Repositories
             }
         }
 
+        public IEnumerable<CurrencyExchangeRateManagementModel> GetExchangeRates()
+        {
+            var rates = _db.CurrencyExchanges;
+
+            if (rates != null && rates.Count() > 0)
+                return rates.Select(r => new CurrencyExchangeRateManagementModel(
+                        r.CurrencyId,
+                        r.CurrencyPairId,
+                        r.Buy,
+                        r.Sell));
+
+            return null;
+        }
+
+        public CurrencyExchangeRateManagementModel GetExchangeRate(int currencyId, int currencyPairId)
+        {
+            var rate = _db.CurrencyExchanges
+                .Where(r => r.CurrencyId == currencyId)
+                ?.FirstOrDefault(r => r.CurrencyPairId == currencyPairId);
+
+            if (rate != null)
+                return new CurrencyExchangeRateManagementModel(
+                    rate.CurrencyId,
+                    rate.CurrencyPairId,
+                    rate.Buy,
+                    rate.Sell);
+
+            return null;
+        }
+
         public void CreateExchangeRate(int currentCurrencyId, int currencyId, decimal buy, decimal sell)
         {
             var exchangeRate = new CurrencyExchangeRateEF(currentCurrencyId, currencyId, buy, sell);
@@ -90,8 +120,16 @@ namespace Infrastructure.Data.Repositories
 
         public void UpdateExchangeRate(int currentCurrencyId, int currencyId, decimal buy, decimal sell)
         {
-            var exchangeRate = new CurrencyExchangeRateEF(currentCurrencyId, currencyId, buy, sell);
-            _db.Entry(exchangeRate).State = EntityState.Modified;
+            var rate = _db.CurrencyExchanges
+                .Where(r => r.CurrencyId == currentCurrencyId)
+                ?.FirstOrDefault(r => r.CurrencyPairId == currencyId);
+
+            if (rate == null)
+                return;
+
+            rate.UpdateByEntity(buy, sell);
+
+            _db.Entry(rate).State = EntityState.Modified;
             _db.SaveChanges();
         }
 

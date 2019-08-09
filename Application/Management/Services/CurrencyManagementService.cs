@@ -39,6 +39,15 @@ namespace Application.Management.Services
             _currencyRepository.Update(currency);
         }
 
+        public IEnumerable<CurrencyExchangeRateManagementModel> GetExchangeRates()
+        {
+            return _currencyRepository.GetExchangeRates();
+        }
+        public CurrencyExchangeRateManagementModel GetExchangeRate(int currencyId, int currencyPairId)
+        {
+            return _currencyRepository.GetExchangeRate(currencyId, currencyPairId);
+        }
+
         public void CreateExchangeRate(CurrencyExchangeRateManagementModel exchangeRate)
         {
             _currencyRepository.CreateExchangeRate(exchangeRate.CurrencyId, exchangeRate.CurrencyPairId, exchangeRate.Buy, exchangeRate.Sell);

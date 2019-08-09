@@ -25,5 +25,13 @@ namespace Infrastructure.Data.Entities
         public decimal Sell { get; set; }
 
         public CurrencyEF Currency { get; set; }
+
+        public void UpdateByEntity(
+            decimal buy,
+            decimal sell)
+        {
+            Buy = buy;
+            Sell = sell;
+        }
     }
 }

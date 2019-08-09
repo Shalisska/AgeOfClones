@@ -13,6 +13,8 @@ namespace Application.Management.Interfaces
 
         void DeleteCurrency(int id);
 
+        IEnumerable<CurrencyExchangeRateManagementModel> GetExchangeRates();
+        CurrencyExchangeRateManagementModel GetExchangeRate(int currencyId, int currencyPairId);
         void CreateExchangeRate(CurrencyExchangeRateManagementModel exchangeRate);
         void UpdateExchangeRate(CurrencyExchangeRateManagementModel exchangeRate);
 

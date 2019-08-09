@@ -43,15 +43,9 @@
             showRowLines: true,
             rowAlternationEnabled: true,
             showBorders: true,
-            columnMinWidth: 50
+            columnMinWidth: 50,
+            masterDetail: currencyTable.masterDetail
         });
-
-        var opts = {
-            dataSource: @BuildDataSource(Model.DataSource),
-            columns: [
-                @BuildColumns(Model.Columns)
-            ]
-        }
     });
 </script>
 
@@ -107,6 +101,15 @@
 
         strBuilder.AppendHtml("({");
         strBuilder.AppendHtml("key: \"" + source.Key + "\",");
+
+        if (source.LoadParams != null && source.LoadParams.Count > 0)
+        {
+            strBuilder.AppendHtml("loadParams: {");
+            foreach (var param in source.LoadParams)
+                strBuilder.AppendHtml($"{param.Key}: \"{param.Value}\",");
+            strBuilder.AppendHtml("},");
+        }
+
         strBuilder.AppendHtml("loadUrl: \"" + source.LoadUrl + "\",");
 
         if (source.UpdateUrl != null)

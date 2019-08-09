@@ -44,7 +44,23 @@
                         })
                     }
                 }
-            ]
+            ],
+            masterDetail: {
+                enabled: true,
+                template: function(container, options) { 
+                    $("<div>")
+                        .dxDataGrid({
+                            dataSource: DevExpress.data.AspNet.createStore({
+                                loadUrl: url + "/OrderDetails",
+                                loadParams: { orderID : options.data.OrderID },
+                                onBeforeSend: function(method, ajaxOptions) {
+                                    ajaxOptions.xhrFields = { withCredentials: true };
+                                }
+                            }),
+                            showBorders: true
+                        }).appendTo(container);
+                }
+            },
         }
 
         clonesUtils.dxDataGridExt().init('#grid', opts);

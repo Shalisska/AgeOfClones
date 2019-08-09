@@ -1,10 +1,14 @@
 ﻿using AgeOfClones.Areas.Management.Models;
+using AgeOfClones.Models;
+using AgeOfClones.Utils;
 using Application.Interfaces;
 using Application.Management.Interfaces;
 using Application.Management.Models;
 using Application.Models.TableEditor;
+using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -27,19 +31,126 @@ namespace AgeOfClones.Areas.Management.Controllers
             _tableEditorService = tableEditorService;
         }
 
-        private TableEditorModel GetTableModel(IEnumerable<CurrencyManagementModel> currencies, CurrencyManagementModel currency)
+        public IActionResult Index()
         {
-            var entityType = typeof(CurrencyManagementModel);
+            var loadActionName = "Currencies";
+            var updateActionName = "UpdateCurrency";
+            var createActionName = "CreateCurrency";
+            var deleteActionName = "DeleteCurrency";
+            var stocksLookupActionName = "StocksLookup";
 
-            var tableModel = new TableEditorModel("Currencies", entityType, "Id", currencies, currency);
+            var source = new DEGridTableDataSource
+            {
+                Type = "createStore",
+                Key = "id",
+                LoadUrl = Url.Action(loadActionName),
+                UpdateUrl = Url.Action(updateActionName),
+                CreateUrl = Url.Action(createActionName),
+                DeleteUrl = Url.Action(deleteActionName)
+            };
 
-            var stocks = _stockManagementService.GetStocks().OrderBy(s => s.Name);
+            var columns = new List<DEGridTableColumn>();
+            columns.Add(new DEGridTableColumn("id"));
+            columns.Add(new DEGridTableColumn("name"));
+            columns.Add(new DEGridTableColumn
+            {
+                IsSimple = false,
+                DataField = "stockId",
+                Caption = "Stock",
+                Lookup = new DEGridTableLookup
+                {
+                    ValueExpr = "value",
+                    DisplayExpr = "text",
+                    DataSource = new DEGridTableDataSource
+                    {
+                        Type = "createStore",
+                        Key = "value",
+                        LoadUrl = Url.Action(stocksLookupActionName)
+                    }
+                }
+            });
 
-            _tableEditorService.AddColumn(tableModel, "Id", null);
-            _tableEditorService.AddColumn(tableModel, "Name", null, ControlType.Input, null);
-            _tableEditorService.AddColumn(tableModel, "StockId", null, ControlType.Select, new SelectList(stocks, "Id", "Name"));
+            var gridTable = new DEGridTable
+            {
+                DataSource = source,
+                Columns = columns
+            };
 
-            return tableModel;
+            return View(gridTable);
+        }
+
+        [HttpGet("currencies")]
+        public object Currencies(DataSourceLoadOptions loadOptions)
+        {
+            var source = _currencyManagementService.GetCurrencies().Select(s => new
+            {
+                s.Id,
+                s.Name,
+                s.StockId
+            });
+
+            loadOptions.PrimaryKey = new[] { "Id" };
+            loadOptions.PaginateViaPrimaryKey = true;
+
+            return DataSourceLoader.Load(source, loadOptions);
+        }
+
+        [HttpGet]
+        public object StocksLookup(DataSourceLoadOptions options)
+        {
+            return DataSourceLoader.Load(
+                from s in _stockManagementService.GetStocks()
+                orderby s.Name
+                select new
+                {
+                    Value = s.Id,
+                    Text = s.Name
+                },
+                options
+            );
+        }
+
+        [HttpPut("update-currency")]
+        public IActionResult UpdateCurrency(int key, string values)
+        {
+            var res = _currencyManagementService.GetCurrency(key);
+            if (res == null)
+                return StatusCode(409, "Currency not found");
+
+            JsonConvert.PopulateObject(values, res);
+
+            if (!TryValidateModel(res))
+                return BadRequest(ModelState.ToFullErrorString());
+
+            _currencyManagementService.UpdateCurrency(res);
+
+            return Ok();
+        }
+
+        [HttpPost("create-currency")]
+        public IActionResult CreateCurrency(string values)
+        {
+            var currency = new CurrencyManagementModel();
+            JsonConvert.PopulateObject(values, currency);
+
+            if (!TryValidateModel(currency))
+                return BadRequest(ModelState.ToFullErrorString());
+
+            _currencyManagementService.CreateCurrency(currency);
+
+            return Json(currency.Id);
+        }
+
+        [HttpDelete("delete-currency")]
+        public IActionResult DeleteCurrency(int key)
+        {
+            var currency = _currencyManagementService.GetCurrency(key);
+            if (currency == null)
+                return StatusCode(409, "Currency not found");
+
+            _currencyManagementService.DeleteCurrency(key);
+
+            return Ok();
         }
 
         private TableEditorModel GetExchangeTableModel(IEnumerable<CurrencyExchangeRateManagementModel> currencyExchanges, CurrencyExchangeRateManagementModel currencyExchange, string currentCurrencyName)
@@ -58,211 +169,70 @@ namespace AgeOfClones.Areas.Management.Controllers
             return tableModel;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        public object ExchangeRates(int id, DataSourceLoadOptions loadOptions)
         {
-            var currencies = _currencyManagementService.GetCurrencies();
-            var tableModel = GetTableModel(currencies, null);
-
-            var model = new ManagementTableViewModel(tableModel, nameof(CreateCurrency), nameof(EditCurrency), nameof(DeleteCurrency));
-
-            return View(model);
-        }
-
-        public IActionResult CreateCurrency()
-        {
-            var tableModel = GetTableModel(null, null);
-            var model = tableModel.GetNewRow().ToList();
-
-            ViewData["Action"] = nameof(CreateCurrency);
-            return PartialView("TableEditor/_TableCreate", model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult CreateCurrency(CurrencyManagementModel currency)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-                if (ModelState.IsValid)
+            var source = _currencyManagementService.GetCurrency(id).ExchangeRate
+                .Select(s => new
                 {
-                    _currencyManagementService.CreateCurrency(currency);
-                }
+                    s.CurrencyId,
+                    s.CurrencyPairId,
+                    s.Buy,
+                    s.Sell
+                });
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return RedirectToAction(nameof(CreateCurrency));
-            }
+            return DataSourceLoader.Load(source, loadOptions);
         }
 
-        public IActionResult EditCurrency(int id)
+        [HttpPut]
+        public IActionResult UpdateExchangeRate(string key, string values)
         {
-            var currency = _currencyManagementService.GetCurrency(id);
+            var keys = new Dictionary<string, int>();
+            JsonConvert.PopulateObject(key, keys);
 
-            var tableModel = GetTableModel(null, currency);
-            var model = tableModel.GetCurrentRow().ToList();
+            var rate = _currencyManagementService.GetExchangeRate(keys["currencyId"], keys["currencyPairId"]);
 
-            ViewData["Action"] = nameof(EditCurrency);
-            return PartialView("TableEditor/_TableEdit", model);
-        }
+            if (rate == null)
+                return StatusCode(409, "CurrencyRate not found");
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult EditCurrency(CurrencyManagementModel currency)
-        {
-            try
-            {
-                // TODO: Add update logic here
-                if (ModelState.IsValid)
-                {
-                    _currencyManagementService.UpdateCurrency(currency);
-                }
+            JsonConvert.PopulateObject(values, rate);
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return RedirectToAction(nameof(EditCurrency));
-            }
-        }
+            if (!TryValidateModel(rate))
+                return BadRequest(ModelState.ToFullErrorString());
 
-        public IActionResult DeleteCurrency(int? id)
-        {
-            var model = _currencyManagementService.GetCurrency(id.Value);
+            _currencyManagementService.UpdateExchangeRate(rate);
 
-            if (model == null)
-                return RedirectToAction(nameof(Index));
-
-            ViewData["Name"] = model.Name;
-            ViewData["Action"] = nameof(DeleteCurrency);
-            return PartialView("TableEditor/_TableDelete");
+            return Ok();
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteCurrency(int id)
+        public IActionResult CreateExchangeRate(string values)
         {
-            try
-            {
-                // TODO: Add delete logic here
-                _currencyManagementService.DeleteCurrency(id);
+            var rate = new CurrencyExchangeRateManagementModel();
+            JsonConvert.PopulateObject(values, rate);
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return RedirectToAction(nameof(DeleteCurrency));
-            }
+            if (!TryValidateModel(rate))
+                return BadRequest(ModelState.ToFullErrorString());
+
+            _currencyManagementService.CreateExchangeRate(rate);
+
+            return Json(new { rate.CurrencyId, rate.CurrencyPairId });
         }
 
-        public IActionResult IndexExchangeRates(int id)
+        [HttpDelete]
+        public IActionResult DeleteExchangeRate(string key)
         {
-            var currency = _currencyManagementService.GetCurrency(id);
-            var tableModel = GetExchangeTableModel(currency.ExchangeRate, null, currency.Name);
+            var keys = new Dictionary<string, int>();
+            JsonConvert.PopulateObject(key, keys);
 
-            var model = new ManagementTableViewModel(tableModel, $"{nameof(CreateExchangeRate)}/{id}", nameof(EditExchangeRate), nameof(DeleteExchangeRate), editRouteValues: new Dictionary<string, string> { { "currencyId", id.ToString() } }, deleteRouteValues: new Dictionary<string, string> { { "currencyId", id.ToString() } });
+            var rate = _currencyManagementService.GetExchangeRate(keys["currencyId"], keys["currencyPairId"]);
 
-            return View("TableEditor/_Table", model);
-        }
+            if (rate == null)
+                return StatusCode(409, "CurrencyRate not found");
 
-        public IActionResult CreateExchangeRate(int id)
-        {
-            var currency = _currencyManagementService.GetCurrency(id);
-            var tableModel = GetExchangeTableModel(null, null, currency.Name);
-            var model = tableModel.GetNewRow(new Dictionary<string, string> { { "CurrencyId", id.ToString() } }).ToList();
+            _currencyManagementService.DeleteExchangeRate(rate);
 
-            ViewData["Action"] = nameof(CreateExchangeRate);
-            return PartialView("TableEditor/_TableCreate", model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult CreateExchangeRate(CurrencyExchangeRateManagementModel rate)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-                if (ModelState.IsValid)
-                {
-                    _currencyManagementService.CreateExchangeRate(rate);
-                }
-
-                return RedirectToAction(nameof(IndexExchangeRates), new { id = rate.CurrencyId });
-            }
-            catch
-            {
-                return RedirectToAction(nameof(CreateExchangeRate));
-            }
-        }
-
-        public IActionResult EditExchangeRate(int id, int currencyId)
-        {
-            var currency = _currencyManagementService.GetCurrency(currencyId);
-            var rate = currency.ExchangeRate.FirstOrDefault(r => r.CurrencyPairId == id);
-
-            var tableModel = GetExchangeTableModel(null, rate, currency.Name);
-            var model = tableModel.GetCurrentRow().ToList();
-
-            ViewData["Action"] = nameof(EditExchangeRate);
-            return PartialView("TableEditor/_TableEdit", model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult EditExchangeRate(CurrencyExchangeRateManagementModel rate)
-        {
-            try
-            {
-                // TODO: Add update logic here
-                if (ModelState.IsValid)
-                {
-                    _currencyManagementService.UpdateExchangeRate(rate);
-                }
-
-                return RedirectToAction(nameof(IndexExchangeRates), new { id = rate.CurrencyId });
-            }
-            catch
-            {
-                return RedirectToAction(nameof(EditExchangeRate));
-            }
-        }
-
-        public IActionResult DeleteExchangeRate(int? id, int currencyId)
-        {
-            var model = _currencyManagementService.GetCurrency(currencyId).ExchangeRate.FirstOrDefault(r => r.CurrencyPairId == id);
-
-            if (model == null)
-                return RedirectToAction(nameof(IndexExchangeRates));
-
-            var data = new Dictionary<string, string>{
-                { "CurrencyPairId", id.Value.ToString() },
-                { "CurrencyId", currencyId.ToString() }
-            };
-
-            ViewData["Name"] = string.Empty;
-            ViewData["Action"] = nameof(DeleteExchangeRate);
-            ViewData["Data"] = data;
-            return PartialView("TableEditor/_TableDelete");
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteExchangeRate(CurrencyExchangeRateManagementModel exchangeRate)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-                var rate = _currencyManagementService.GetCurrency(exchangeRate.CurrencyId).ExchangeRate.FirstOrDefault(r => r.CurrencyPairId == exchangeRate.CurrencyPairId);
-                _currencyManagementService.DeleteExchangeRate(rate);
-
-                return RedirectToAction(nameof(IndexExchangeRates), new { id = rate.CurrencyId });
-            }
-            catch
-            {
-                return RedirectToAction(nameof(DeleteCurrency));
-            }
+            return Ok();
         }
     }
 }

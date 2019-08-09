@@ -15,6 +15,7 @@ namespace AgeOfClones.Models
     {
         public string Type { get; set; }
         public string Key { get; set; }
+        public Dictionary<string,string> LoadParams { get; set; }
         public string LoadUrl { get; set; }
         public string UpdateUrl { get; set; }
         public string CreateUrl { get; set; }
