@@ -30,7 +30,7 @@ namespace Application.Services
         {
             var operation = new Operation
             {
-                OperationDirection = operationDirection,
+                Direction = operationDirection,
                 StorageId = storageId,
                 GoodsId = goodsId,
                 Value = value,
