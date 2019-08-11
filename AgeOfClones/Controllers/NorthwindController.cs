@@ -24,7 +24,8 @@
 //        [HttpGet("orders")]
 //        public object Orders(DataSourceLoadOptions loadOptions)
 //        {
-//            var source = _nwind.Orders.Select(o => new {
+//            var source = _nwind.Orders.Select(o => new
+//            {
 //                o.OrderId,
 //                o.CustomerId,
 //                o.OrderDate,
@@ -135,7 +136,8 @@
 //        [HttpGet("products")]
 //        public object Products(DataSourceLoadOptions loadOptions)
 //        {
-//            var projection = _nwind.Products.Select(p => new {
+//            var projection = _nwind.Products.Select(p => new
+//            {
 //                p.ProductId,
 //                p.ProductName,
 //                p.Category.CategoryName,

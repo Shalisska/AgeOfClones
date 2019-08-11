@@ -2,14 +2,18 @@
 //using Microsoft.EntityFrameworkCore;
 //using Microsoft.EntityFrameworkCore.Metadata;
 
-//namespace Sample.Models {
+//namespace Sample.Models
+//{
 
-//    public partial class NorthwindContext : DbContext {
-//        public NorthwindContext() {
+//    public partial class NorthwindContext : DbContext
+//    {
+//        public NorthwindContext()
+//        {
 //        }
 
 //        public NorthwindContext(DbContextOptions<NorthwindContext> options)
-//            : base(options) {
+//            : base(options)
+//        {
 //        }
 
 //        public virtual DbSet<Category> Categories { get; set; }
@@ -19,13 +23,16 @@
 //        public virtual DbSet<Product> Products { get; set; }
 //        public virtual DbSet<Shippers> Shippers { get; set; }
 
-//        protected override void OnModelCreating(ModelBuilder modelBuilder) {
-//            modelBuilder.Entity<Category>(entity => {
+//        protected override void OnModelCreating(ModelBuilder modelBuilder)
+//        {
+//            modelBuilder.Entity<Category>(entity =>
+//            {
 //                entity.HasIndex(e => e.CategoryName)
 //                    .HasName("CategoryName");
 //            });
 
-//            modelBuilder.Entity<Customer>(entity => {
+//            modelBuilder.Entity<Customer>(entity =>
+//            {
 //                entity.HasIndex(e => e.City)
 //                    .HasName("City");
 
@@ -41,7 +48,8 @@
 //                entity.Property(e => e.CustomerId).ValueGeneratedNever();
 //            });
 
-//            modelBuilder.Entity<OrderDetail>(entity => {
+//            modelBuilder.Entity<OrderDetail>(entity =>
+//            {
 //                entity.HasKey(e => new { e.OrderId, e.ProductId });
 
 //                entity.HasIndex(e => e.OrderId)
@@ -69,7 +77,8 @@
 //                    .HasConstraintName("FK_Order_Details_Products");
 //            });
 
-//            modelBuilder.Entity<Order>(entity => {
+//            modelBuilder.Entity<Order>(entity =>
+//            {
 //                entity.HasIndex(e => e.CustomerId)
 //                    .HasName("CustomersOrders");
 
@@ -101,7 +110,8 @@
 //                    .HasConstraintName("FK_Orders_Shippers");
 //            });
 
-//            modelBuilder.Entity<Product>(entity => {
+//            modelBuilder.Entity<Product>(entity =>
+//            {
 //                entity.HasIndex(e => e.CategoryId)
 //                    .HasName("CategoryID");
 
