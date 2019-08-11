@@ -42,6 +42,14 @@
   <ItemGroup>
     <Compile Include="Entities\Account.cs" />
     <Compile Include="Entities\Clone.cs" />
+    <Compile Include="Entities\CommonItems\BlockType.cs" />
+    <Compile Include="Entities\CommonItems\GoodsType.cs" />
+    <Compile Include="Entities\CommonItems\IGoods.cs" />
+    <Compile Include="Entities\CommonItems\IOperationParticipant.cs" />
+    <Compile Include="Entities\CommonItems\Operation.cs" />
+    <Compile Include="Entities\CommonItems\OperationDirection.cs" />
+    <Compile Include="Entities\CommonItems\OperationStatus.cs" />
+    <Compile Include="Entities\CommonItems\ParticipantType.cs" />
     <Compile Include="Entities\Currency.cs" />
     <Compile Include="Entities\Profile.cs" />
     <Compile Include="Entities\Resource.cs" />

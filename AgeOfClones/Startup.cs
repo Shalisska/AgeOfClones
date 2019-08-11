@@ -31,10 +31,10 @@ namespace AgeOfClones
         {
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ClonesContextEF>(options => options.UseSqlServer(connection));
-            services.AddDbContext<NorthwindContext>(options => options
-                    .UseSqlServer("Server=(LocalDB)\\MSSQLLocalDB; Database=Northwind; Trusted_Connection=True")
-                    .ConfigureWarnings(warnings => warnings.Throw(RelationalEventId.QueryClientEvaluationWarning))
-                );
+            //services.AddDbContext<NorthwindContext>(options => options
+            //        .UseSqlServer("Server=(LocalDB)\\MSSQLLocalDB; Database=Northwind; Trusted_Connection=True")
+            //        .ConfigureWarnings(warnings => warnings.Throw(RelationalEventId.QueryClientEvaluationWarning))
+            //    );
 
             services.AddTransient<IProfileManagementService, ProfileManagementService>();
             services.AddTransient<IStockManagementService, StockManagementService>();

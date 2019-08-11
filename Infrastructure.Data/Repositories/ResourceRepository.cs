@@ -1,5 +1,6 @@
 ﻿using Application.Data.Repositories;
 using Application.Management.Models;
+using Domain.GameModule.Entities.CommonItems;
 using Infrastructure.Data.EF;
 using Infrastructure.Data.Entities;
 using Infrastructure.Data.XML.Entities;
@@ -23,7 +24,7 @@ namespace Infrastructure.Data.Repositories
 
         public IEnumerable<ResourceManagementModel> GetAll()
         {
-            var items = _db.Resources;
+            var items = _db.Goods?.Where(g => g.GoodsType == GoodsType.Resource);
 
             if (items != null && items.Count() > 0)
                 return items.Select(item => new ResourceManagementModel(
@@ -31,7 +32,6 @@ namespace Infrastructure.Data.Repositories
                     item.Name,
                     item.PriceBase,
                     item.Price,
-                    item.Performance,
                     item.StockId));
 
             return null;
@@ -39,7 +39,7 @@ namespace Infrastructure.Data.Repositories
 
         public ResourceManagementModel Get(int id)
         {
-            var item = _db.Resources.Find(id);
+            var item = _db.Goods.Find(id);
 
             if (item != null)
                 return new ResourceManagementModel(
@@ -47,7 +47,6 @@ namespace Infrastructure.Data.Repositories
                     item.Name,
                     item.PriceBase,
                     item.Price,
-                    item.Performance,
                     item.StockId);
 
             return null;
@@ -55,25 +54,25 @@ namespace Infrastructure.Data.Repositories
 
         public void Create(ResourceManagementModel item)
         {
-            var newItem = new ResourceEF(
+            var newItem = new GoodsEF(
                 item.Id,
                 item.Name,
                 item.PriceBase,
                 item.Price,
-                item.Performance,
+                GoodsType.Resource,
                 item.StockId);
 
-            _db.Resources.Add(newItem);
+            _db.Goods.Add(newItem);
         }
 
         public void Update(ResourceManagementModel item)
         {
-            var itemUpdating = _db.Resources.FirstOrDefault(i => i.Id == item.Id);
+            var itemUpdating = _db.Goods.FirstOrDefault(i => i.Id == item.Id);
             itemUpdating.UpdateByEntity(
                 item.Name,
                 item.PriceBase,
                 item.Price,
-                item.Performance,
+                GoodsType.Resource,
                 item.StockId);
 
             _db.Entry(itemUpdating).State = EntityState.Modified;
@@ -81,15 +80,15 @@ namespace Infrastructure.Data.Repositories
 
         public void Delete(int id)
         {
-            var item = _db.Resources.Find(id);
+            var item = _db.Goods.Find(id);
             if (item != null)
-                _db.Resources.Remove(item);
+                _db.Goods.Remove(item);
         }
 
         public void UpdateFromXML()
         {
             IEnumerable<ResourceXML> resourcesXML = _repositoryXML.GetResourcesFromXML();
-            IEnumerable<ResourceEF> resources = _db.Resources.ToList();
+            IEnumerable<GoodsEF> resources = _db.Goods?.Where(g => g.GoodsType == GoodsType.Resource).ToList();
 
             foreach (var item in resourcesXML)
             {
@@ -97,14 +96,14 @@ namespace Infrastructure.Data.Repositories
 
                 if (resource == null)
                 {
-                    var newResource = new ResourceEF()
-                    {
-                        Name = item.Name,
-                        PriceBase = item.PriceBase,
-                        Price = item.Price,
-                        StockId = item.StockId + 1
-                    };
-                    _db.Resources.Add(newResource);
+                    var newResource = new GoodsEF(
+                        item.Name,
+                        item.PriceBase,
+                        item.Price,
+                        GoodsType.Resource,
+                        item.StockId + 1);
+
+                    _db.Goods.Add(newResource);
                 }
                 else
                 {

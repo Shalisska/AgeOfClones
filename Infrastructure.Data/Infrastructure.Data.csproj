@@ -107,9 +107,12 @@
     <Compile Include="Entities\CloneEF.cs" />
     <Compile Include="Entities\CurrencyEF.cs" />
     <Compile Include="Entities\CurrencyExchangeRateEF.cs" />
+    <Compile Include="Entities\GoodsEF.cs" />
+    <Compile Include="Entities\OperationEF.cs" />
     <Compile Include="Entities\ProfileEF.cs" />
     <Compile Include="Entities\ResourceEF.cs" />
     <Compile Include="Entities\StockEF.cs" />
+    <Compile Include="Entities\StorageIdentityEF.cs" />
     <Compile Include="Migrations\20181121215146_DBFromClones.cs" />
     <Compile Include="Migrations\20181121215146_DBFromClones.designer.cs">
       <DependentUpon>20181121215146_DBFromClones.cs</DependentUpon>
@@ -133,6 +136,14 @@
     <Compile Include="Migrations\20190309115150_RenameEntities.cs" />
     <Compile Include="Migrations\20190309115150_RenameEntities.designer.cs">
       <DependentUpon>20190309115150_RenameEntities.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20190811163821_GoodsOperations.cs" />
+    <Compile Include="Migrations\20190811163821_GoodsOperations.designer.cs">
+      <DependentUpon>20190811163821_GoodsOperations.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20190811165154_EnumToInt.cs" />
+    <Compile Include="Migrations\20190811165154_EnumToInt.designer.cs">
+      <DependentUpon>20190811165154_EnumToInt.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\ClonesContextEFModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

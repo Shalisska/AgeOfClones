@@ -1,5 +1,6 @@
 ﻿using Application.Data.Repositories;
 using Application.Management.Models;
+using Domain.GameModule.Entities.CommonItems;
 using Infrastructure.Data.EF;
 using Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -20,31 +21,37 @@ namespace Infrastructure.Data.Repositories
 
         public IEnumerable<CurrencyManagementModel> GetAll()
         {
-            var currencies = _db.Currencies;
+            var currencies = _db.Goods?.Where(g => g.GoodsType == GoodsType.Currency);
+            var rates = _db.CurrencyExchanges;
 
             if (currencies != null && currencies.Count() > 0)
-                return currencies.Select(c => new CurrencyManagementModel(
+            {
+                var currenciesDTO = currencies.Select(c => new CurrencyManagementModel(
                     c.Id,
                     c.Name,
-                    c.ExchangeRates.Select(r => new CurrencyExchangeRateManagementModel(
+                    rates.Select(r => new CurrencyExchangeRateManagementModel(
                         r.CurrencyId,
                         r.CurrencyPairId,
                         r.Buy,
                         r.Sell)),
                     c.StockId));
 
+                return currenciesDTO;
+            }
+
             return null;
         }
 
         public CurrencyManagementModel Get(int id)
         {
-            var currency = _db.Currencies.Include(c=>c.ExchangeRates).FirstOrDefault(c => c.Id == id);
+            var currency = _db.Goods.FirstOrDefault(c => c.Id == id);
+            var rates = _db.CurrencyExchanges.Where(r => r.CurrencyId == id);
 
             if (currency != null)
                 return new CurrencyManagementModel(
                     currency.Id,
                     currency.Name,
-                    currency.ExchangeRates.Select(r => new CurrencyExchangeRateManagementModel(
+                    rates.Select(r => new CurrencyExchangeRateManagementModel(
                         r.CurrencyId,
                         r.CurrencyPairId,
                         r.Buy,
@@ -56,15 +63,15 @@ namespace Infrastructure.Data.Repositories
 
         public void Create(CurrencyManagementModel item)
         {
-            var currency = new CurrencyEF(item.Id, item.Name, item.StockId);
-            _db.Currencies.Add(currency);
+            var currency = new GoodsEF(item.Id, item.Name, GoodsType.Currency, item.StockId);
+            _db.Goods.Add(currency);
 
             _db.SaveChanges();
         }
 
         public void Update(CurrencyManagementModel item)
         {
-            var currency = new CurrencyEF(item.Id, item.Name, item.StockId);
+            var currency = new GoodsEF(item.Id, item.Name, GoodsType.Currency, item.StockId);
             _db.Entry(currency).State= EntityState.Modified;
 
             _db.SaveChanges();
@@ -72,10 +79,10 @@ namespace Infrastructure.Data.Repositories
 
         public void Delete(int id)
         {
-            var currency = _db.Currencies.Find(id);
+            var currency = _db.Goods.Find(id);
             if (currency != null)
             {
-                _db.Currencies.Remove(currency);
+                _db.Goods.Remove(currency);
                 _db.SaveChanges();
             }
         }

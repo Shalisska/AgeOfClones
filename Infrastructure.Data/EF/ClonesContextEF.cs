@@ -18,6 +18,9 @@ namespace Infrastructure.Data.EF
         public DbSet<CurrencyEF> Currencies { get; set; }
         public DbSet<CurrencyExchangeRateEF> CurrencyExchanges { get; set; }
         public DbSet<CloneEF> Clones { get; set; }
+        public DbSet<GoodsEF> Goods { get; set; }
+        public DbSet<StorageIdentityEF> StorageIdentities { get; set; }
+        public DbSet<OperationEF> Operations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
