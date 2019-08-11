@@ -39,6 +39,13 @@ namespace Infrastructure.Data.Repositories
 
         public void CreateOperation(Operation operation)
         {
+            AddOperationToContext(operation);
+
+            _db.SaveChanges();
+        }
+
+        private void AddOperationToContext(Operation operation)
+        {
             var item = new OperationEF(
                 operation.Id,
                 operation.Direction,
@@ -54,7 +61,10 @@ namespace Infrastructure.Data.Repositories
                 operation.HasChildren);
 
             _db.Operations.Add(item);
-            _db.SaveChanges();
+
+            if (operation.HasChildren)
+                foreach (var child in operation.ChildOperations)
+                    AddOperationToContext(child);
         }
 
         public int CreateStorageId(BlockType blockType, ParticipantType participantType, int participantId)

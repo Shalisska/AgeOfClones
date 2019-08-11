@@ -40,7 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\Account.cs" />
+    <Compile Include="Entities\MainBlockItems\Account.cs" />
     <Compile Include="Entities\Clone.cs" />
     <Compile Include="Entities\CommonItems\BlockType.cs" />
     <Compile Include="Entities\CommonItems\GoodsType.cs" />
@@ -51,9 +51,11 @@
     <Compile Include="Entities\CommonItems\OperationStatus.cs" />
     <Compile Include="Entities\CommonItems\ParticipantType.cs" />
     <Compile Include="Entities\Currency.cs" />
+    <Compile Include="Entities\MainBlockItems\MainBlock.cs" />
     <Compile Include="Entities\Profile.cs" />
     <Compile Include="Entities\Resource.cs" />
-    <Compile Include="Entities\Stock.cs" />
+    <Compile Include="Entities\TradeBlockItems\Stock.cs" />
+    <Compile Include="Entities\TradeBlockItems\TradeBlock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

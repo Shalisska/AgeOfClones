@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.GameModule.Entities
+namespace Domain.GameModule.Entities.MainBlockItems
 {
     public class Account
     {
@@ -12,5 +12,6 @@ namespace Domain.GameModule.Entities
         public string Name { get; set; }
 
         public int ProfileId { get; set; }
+        public int StorageId { get; set; }
     }
 }
